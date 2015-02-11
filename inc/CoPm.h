@@ -36,6 +36,7 @@ enum {
 #define PM_SDO_DC_OUTPUT_I_SETPOINT            0x210a
 #define PM_SDO_DC_OUTPUT_I_SLOPE_LIMIT         0x210b
 #define PM_SDO_VOLTAGE_SETPOINT_OFFSET         0x210d
+#define PM_SDO_CONV_INHIBIT                    0x210e
 
 
 #define PM_SDO_CAPABILITIES                    0x2110
