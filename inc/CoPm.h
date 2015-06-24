@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 
+#pragma pack(1)
+
 #define PM_SDO_CONV_ENABLE                     0x2100
 #define PM_SDO_CONV_STATUS                     0x2101
 enum {
@@ -59,7 +61,15 @@ enum {
 #define PM_SDO_CURRENT_TRANSFER_RATIO          0x211a
 #define PM_SDO_NUMBER_OF_PHASES                0x211b
 
-#pragma pack(1)
+#define PM_SDO_BIST_RESULTS                    0x2141
+
+#define PM_SDO_BIST_RESULT_GLOBAL_BOARD_TEST1_IDX   1
+#define PM_SDO_BIST_RESULT_GLOBAL_BOARD_TEST2_IDX   2
+#define PM_SDO_BIST_RESULT_TEMPERATURE_IDX          3
+#define PM_SDO_BIST_RESULT_CONVERTER1_IDX           4
+#define PM_SDO_BIST_RESULT_CONVERTER2_IDX           5
+#define PM_SDO_BIST_RESULT_CONVERTER3_IDX           6
+
 typedef union {
     struct {
         uint16_t m_chargerOn:1;
@@ -88,6 +98,121 @@ struct PM_PDO_1
     int16_t     m_temperature;
     TPmStatus   m_status;
 };
+
+// Test results definitions
+#define PM_TR_NOT_TESTED       0
+#define PM_TR_TEST_FAILED      1
+#define PM_TR_RESERVED         2
+#define PM_TR_TEST_PASSED      3
+
+// the test results are reported with several SDOs
+// 2 general SDOs with general board info
+// one SDO for each channel
+// 1 SDO for temperature measurements
+typedef union
+{
+    uint32_t ulAll;
+    struct
+    {
+        uint32_t bfTestResult : 2;                 // bit 0..1
+        // Passive tests
+        uint32_t bfEeprom : 2;
+        uint32_t bfFan : 2;
+        uint32_t bfLEMReference : 2;
+        uint32_t bfDcBusVoltageZero : 2;           // bit 8..9
+        uint32_t bfDcCurrentZero : 2;
+        uint32_t bfDumploadCurrentZero : 2;
+        // active tests
+        uint32_t bfAuxPower15V : 2;
+        uint32_t bfAuxPower12V : 2;                // bit 16..17
+        uint32_t bfSpiExtAdc : 2;
+        // main output
+        uint32_t bfDcOutputCurrent : 2;
+        uint32_t bfBusVoltage : 2;
+        uint32_t bfOutputVoltage : 2;              // bit 24..25
+        // DC capacitors
+        uint32_t bfDcCapacitors : 2;
+        uint32_t bfDcBus : 2;
+        // grid
+        uint32_t bfGridConnection : 2;
+    } bits;
+} TPmBistResultGeneral1;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct
+    {
+        uint32_t bfCpldInterlock : 2;              // bit 0..1
+        uint32_t bfCpldOVP : 2;
+        uint32_t bfCpldOCP : 2;
+        uint32_t bfCpldReset : 2;
+        uint32_t bfDcOutputVoltageZero : 2;        // bit 8..9
+        uint32_t bfReserved2 : 2;
+        // dumpload
+        uint32_t bfDischargeSpeed : 2;
+        uint32_t bfDumploadCurrentSense : 2;
+        uint32_t bfDumploadPowerLimit : 2;         // bit 16..17
+        uint32_t bfDcOutputOvp : 2;
+        uint32_t bfReserved5 : 2;
+        uint32_t bfReserved6 : 2;
+        uint32_t bfReserved7 : 2;                  // bit 24..25
+        uint32_t bfReserved8 : 2;
+        uint32_t bfReserved9 : 2;
+        uint32_t bfReserved10 : 2;
+    } bits;
+} TPmBistResultGeneral2;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct
+    {
+        // passive tests
+        uint32_t bfLEMZero : 2;                    // bit 0..1
+        uint32_t bfReserved1: 2;
+        uint32_t bfDcStageCurrentZero : 2;
+        // active tests
+        uint32_t bfAcVoltage : 2;
+        uint32_t bfAcCurrent : 2;                  // bit 8..9
+        uint32_t bfDvdt : 2;
+        uint32_t bfResonantStage : 2;
+        uint32_t bfDcCurrent : 2;
+        uint32_t bfDcVoltage : 2;                  // bit 16..17
+        uint32_t bfReserved2 : 2;
+        uint32_t bfReserved3 : 2;
+        uint32_t bfReserved4 : 2;
+        uint32_t bfReserved5 : 2;                  // bit 24..25
+        uint32_t bfReserved6 : 2;
+        uint32_t bfReserved7 : 2;
+        uint32_t bfReserved8 : 2;
+    } bits;
+} TPmBistConvXResult;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct
+    {
+        uint32_t bfTemperatureADC : 2;
+        uint32_t bfTemperatureIGBT1 : 2;
+        uint32_t bfTemperatureRECT1 : 2;
+        uint32_t bfTemperatureIGBT3 : 2;
+        uint32_t bfTemperatureDiode : 2;
+        uint32_t bfTemperatureInd1 : 2;
+        uint32_t bfTemperatureTr1 : 2;
+        uint32_t bfTemperatureInd3 : 2;
+        uint32_t bfTemperatureTr3 : 2;
+        uint32_t bfTemperaturePCB1 : 2;
+        uint32_t bfTemperaturePCB2 : 2;
+        uint32_t bfReserved1 : 2;
+        uint32_t bfReserved2 : 2;
+        uint32_t bfReserved3 : 2;
+        uint32_t bfReserved4 : 2;
+        uint32_t bfReserved5 : 2;
+    } bits;
+} TPmBistTemperatureControl;
+
 #pragma pack()
 
 #endif // __INTERFACE_COPM_H__
