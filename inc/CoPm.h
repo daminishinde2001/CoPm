@@ -6,6 +6,7 @@
 #define __INTERFACE_COPM_H__
 
 #include <stdint.h>
+#include <string>
 
 #pragma pack(1)
 
@@ -29,6 +30,34 @@ enum {
     PM_STATUS_SETPOINT_NOT_MET              = 1<<14,
     PM_STATUS_PFC_ERROR                     = 1<<15
 };
+
+inline std::string PmStatus2String(int PmStatus)
+{
+    std::string retValue = "Undefined";
+
+    switch(PmStatus)
+    {
+    case PM_STATUS_ENABLED:                      retValue = "PM_STATUS_ENABLED"; break;
+    case PM_STATUS_GLOBAL_ERROR:                 retValue = "PM_STATUS_GLOBAL_ERROR"; break;
+    case PM_STATUS_INPUT_OVER_VOLTAGE_PROTECT:   retValue = "PM_STATUS_INPUT_OVER_VOLTAGE_PROTECT"; break;
+    case PM_STATUS_INPUT_UNDER_VOLTAGE_PROTECT:  retValue = "PM_STATUS_INPUT_UNDER_VOLTAGE_PROTECT"; break;
+    case PM_STATUS_OUTPUT_OVER_VOLTAGE_PROTECT:  retValue = "PM_STATUS_OUTPUT_OVER_VOLTAGE_PROTECT"; break;
+    case PM_STATUS_OUTPUT_UNDER_VOLTAGE_PROTECT: retValue = "PM_STATUS_OUTPUT_UNDER_VOLTAGE_PROTECT"; break;
+    case PM_STATUS_FAN_FAILURE:                  retValue = "PM_STATUS_FAN_FAILURE"; break;
+    case PM_STATUS_OVER_TEMPERATURE_DETECT:      retValue = "PM_STATUS_OVER_TEMPERATURE_DETECT"; break;
+    case PM_STATUS_INPUT_OVER_CURRENT_PROTECT:   retValue = "PM_STATUS_INPUT_OVER_CURRENT_PROTECT"; break;
+    case PM_STATUS_OUTPUT_OVER_CURRENT_PROTECT:  retValue = "PM_STATUS_OUTPUT_OVER_CURRENT_PROTECT"; break;
+    case PM_STATUS_AUX_SUPPLY:                   retValue = "PM_STATUS_AUX_SUPPLY"; break;
+    case PM_STATUS_INTERLOCK:                    retValue = "PM_STATUS_INTERLOCK"; break;
+    case PM_STATUS_RESET_DETECTED:               retValue = "PM_STATUS_RESET_DETECTED"; break;
+    case PM_STATUS_SETPOINT_TIMEOUT:             retValue = "PM_STATUS_SETPOINT_TIMEOUT"; break;
+    case PM_STATUS_SETPOINT_NOT_MET:             retValue = "PM_STATUS_SETPOINT_NOT_MET"; break;
+    case PM_STATUS_PFC_ERROR:                    retValue = "PM_STATUS_PFC_ERROR"; break;
+    }
+
+    return retValue;
+}
+
 #define PM_SDO_CONV_TEMP                       0x2104
 #define PM_SDO_DEFECT_REASON                   0x2105
 #define PM_SDO_LAST_REASON                     0x2106
