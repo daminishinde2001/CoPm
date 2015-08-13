@@ -13,10 +13,10 @@
 #define PM_SDO_CONV_ENABLE                     0x2100
 enum
 {
-    PMC_CONVERTER_OFF = 0,
-    PMC_CONVERTER_ENABLE = 1,
-    PMC_START_SELF_TEST = 4,
-    PMC_CLEAR_ERRORS = 6
+    PM_CONVERTER_OFF = 0,
+    PM_CONVERTER_ENABLE = 1,
+    PM_CONVERTER_START_SELF_TEST = 4,
+    PM_CONVERTER_CLEAR_ERRORS = 6
 };
 #define PM_SDO_CONV_STATUS                     0x2101
 enum {
