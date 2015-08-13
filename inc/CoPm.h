@@ -11,7 +11,7 @@
 #pragma pack(1)
 
 #define PM_SDO_CONV_ENABLE                     0x2100
-enum
+enum TPmConverterControl
 {
     PM_CONVERTER_OFF = 0,
     PM_CONVERTER_ENABLE = 1,
@@ -19,7 +19,8 @@ enum
     PM_CONVERTER_CLEAR_ERRORS = 6
 };
 #define PM_SDO_CONV_STATUS                     0x2101
-enum {
+enum TPmConverterStatus
+{
     PM_STATUS_ENABLED                       = 1<<0,
     PM_STATUS_GLOBAL_ERROR                  = 1<<1,
     PM_STATUS_INPUT_OVER_VOLTAGE_PROTECT    = 1<<2,
