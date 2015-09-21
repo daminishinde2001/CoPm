@@ -180,6 +180,8 @@ struct PM_PDO_1
     TPmStatus   m_status;
 };
 
+#define PM_SDO_CONV_TEMP_MASK   0x3FF
+
 // Test results definitions
 #define PM_TR_NOT_TESTED       0
 #define PM_TR_TEST_FAILED      1
