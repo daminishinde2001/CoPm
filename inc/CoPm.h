@@ -6,7 +6,6 @@
 #define __INTERFACE_COPM_H__
 
 #include <stdint.h>
-#include <string>
 
 #pragma pack(1)
 
@@ -39,9 +38,9 @@ enum TPmConverterStatus
     PM_STATUS_PFC_ERROR                     = 1<<15
 };
 
-inline std::string PmStatus2String(int PmStatus)
+inline const char* PmStatus2String(int PmStatus)
 {
-    std::string retValue = "Undefined";
+    const char* retValue = "Undefined";
 
     switch(PmStatus)
     {
