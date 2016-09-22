@@ -173,6 +173,7 @@ typedef union {
     uint16_t    m_value;
 } TPmStatus;
 
+#define PM_PDO_STATUS       PDO_1
 struct PM_PDO_1
 {
     uint16_t    m_voltage;
@@ -180,9 +181,22 @@ struct PM_PDO_1
     int16_t     m_temperature;
     TPmStatus   m_status;
 };
-
 #define PM_SDO_CONV_TEMP_MASK   0x3FF
 
+#define PM_PDO_CONSTRAINT   PDO_3
+#define PM_CONSTRAINT_TYPE_DC_CURRENT 0
+struct TPmConstraintDcCurrent {
+    uint16_t    min;
+    uint16_t    max;
+    uint16_t    ctr;
+};
+
+struct TPmConstraint {
+    uint8_t     type;
+    union {
+        TPmConstraintDcCurrent dc_current;
+    };
+};
 // Test results definitions
 #define PM_TR_NOT_TESTED       0
 #define PM_TR_TEST_FAILED      1
