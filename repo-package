@@ -1,1 +1,2 @@
 copy CoPm/inc/CoPm.h inc/CoPm.h
+copy CoPm/inc/CoBridge.h inc/CoBridge.h
