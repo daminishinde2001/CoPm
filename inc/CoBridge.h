@@ -199,6 +199,22 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
 }
 
 #define PWB_SDO_PM_NUM                           0x2403
+#define PWB_SDO_INTERLINK_DC_CONTACTOR           0x2404
+
+enum TPwbInterlinkDcContactorWrite
+{
+    PWB_INTERLINK_FORCED_OFF = 0,
+    PWB_INTERLINK_TIMED_ENABLE,
+
+    // 2..254, reserved, do not use
+    PWB_INTERLINK_FORCED_ENABLE = 255,
+};
+
+enum TPwbInterlinkDcContactorRead
+{
+    PWB_INTERLINK_OPEN = 0,
+    PWB_INTERLINK_CLOSED,
+};
 
 #pragma pack()
 
