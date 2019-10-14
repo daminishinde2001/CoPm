@@ -8,12 +8,14 @@
 
 #pragma pack(1)
 
-#define PWB_SDO_DC_OUTPUT_U_I                    0x2400
-// reading sub-index 0 returns the number of power-modules defined with 2403
-// reading sub-index 1..n gives U,I output per power-module 0..n-1
-#define PWB_SDO_PM_STATE                         0x2401
-// reading sub-index 0 returns the number of power-modules defined with 2403
-// reading sub-index 1..n gives state per power-module 0..n-1
+#define PWB_SDO_PM_OUTPUT               0x2400
+#define PWB_SDO_PM_STATUS               0x2401
+#define PWB_SDO_INTERLINK_DC_CONTACTOR  0x2402
+#define PWB_SDO_PM_MAX_OUTPUT           0x2403
+
+#define PWB_SDO_CONFIG_PM_TYPE          0x2420
+#define PWB_SDO_CONFIG_PM_TOPOLOGY      0x2421
+
 
 typedef struct
 {
@@ -169,16 +171,15 @@ typedef struct
     }state;
 }TPwbPmState;
 
-#define PWB_SDO_PM_TYPE                          0x2402
-
 enum TPwbPowerModuleType
 {
-    PWB_INFY50030 = 0,
+    PWB_UNDEFINED = 0,
+    PWB_INFY50030,
     PWB_INFY75025,
     PWB_INFY100025,
     PWB_INCR50030,
     PWB_INCR75025,
-    PWB_UUGR100025,
+    PWB_UUGR100030,
 };
 
 inline const char* PwbTypeString(TPwbPowerModuleType PmType)
@@ -192,14 +193,12 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
     case PWB_INFY100025:  retValue = "Infy,1000V/25A"; break;
     case PWB_INCR50030:  retValue = "Increase,500V/30A"; break;
     case PWB_INCR75025:  retValue = "Increase,750V/25A"; break;
-    case PWB_UUGR100025:  retValue = "UuGreen,1000V/25A"; break;
+    case PWB_UUGR100030:  retValue = "UuGreen,1000V/30A"; break;
+    default: break;
     }
 
     return retValue;
 }
-
-#define PWB_SDO_PM_NUM                           0x2403
-#define PWB_SDO_INTERLINK_DC_CONTACTOR           0x2404
 
 enum TPwbInterlinkDcContactorWrite
 {
@@ -215,6 +214,33 @@ enum TPwbInterlinkDcContactorRead
     PWB_INTERLINK_OPEN = 0,
     PWB_INTERLINK_CLOSED,
 };
+
+typedef struct
+{
+    uint16_t    voltage;
+    uint16_t    current;
+}TPwbVI;
+
+typedef union
+{
+    struct
+    {
+        uint32_t m_bInterlinkDCPlusClose:1;
+        uint32_t m_bInterlinkDCMinusrClose:1;
+        uint32_t m_bHasOutletError:1;
+        uint32_t m_bHasConfigurationError:1;
+        uint32_t m_unused:28;
+    }m_bits;
+    uint32_t m_data;
+}TPwbStatus;
+
+typedef struct
+{
+    TPwbStatus  m_status;
+    uint16_t    m_reserved0;
+    uint16_t    m_reserved1;
+}PWB_PDO_1;
+
 
 #pragma pack()
 
