@@ -1,13 +1,11 @@
-
-// When updating the interface do update the description ICD also
-// ...\OpsFs\07. Projects\05. Charger SW\03. Design\Shared\ICD_Terra_Canopen_objects.doc
-
 #ifndef __INTERFACE_COPM_H__
 #define __INTERFACE_COPM_H__
 
 #include <stdint.h>
 
 #pragma pack(1)
+
+/// # 21xx Power Converter (DCB)
 
 #define PM_SDO_CONV_ENABLE                     0x2100
 enum TPmConverterControl

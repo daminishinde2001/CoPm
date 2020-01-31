@@ -1,1 +1,1 @@
-DIRS = tst
+DIRS = tst doc
