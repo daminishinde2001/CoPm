@@ -15,6 +15,8 @@
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 #define PWB_SDO_CONFIG_PM_TOPOLOGY      0x2421
+#define PWB_SDO_CONFIG_PM_GROUP         0x2422
+#define PWB_SDO_CONFIG_PM_OFFSET        0x2423
 
 typedef struct
 {
