@@ -699,15 +699,22 @@ inline const char* PmStatus2String(int PmStatus)
 /// | others   | reserved                                         |           |
 
 #define PM_SDO_BIST_RESULTS                    0x2141
-/// This object reads the BIST result (ResonantConverter)
+/// This object reads the BIST result
 /// ------------------------------------
 ///
 /// The Built in Self test can only be activated when the converter is not in the
 /// active state.
 ///
-/// Note that the power module is not responsive for about 10 seconds after the test
-/// was started. So when polling this SDO there will be no response for about 10
-/// seconds. After 10 seconds the test should be finished.
+/// Note that the power module is not responsive for a short period (see the table below)
+/// after the test was started. So when polling this SDO there will be no response
+/// during that period. After that the test should be finished.
+///
+/// | Converter         | Non-responsive period (s) |
+/// |-------------------|---------------------------|
+/// | ResonantConverter | 10                        |
+/// | UUGreen           | 60                        |
+///
+/// **ResonantConverter**
 ///
 /// | subindex | Description                     | r/w | Unit | size/type |
 /// |----------|---------------------------------|-----|------|-----------|
@@ -720,7 +727,18 @@ inline const char* PmStatus2String(int PmStatus)
 /// | 6        | Converter channel3 test results | R   |      | uint32    |
 /// | others   | reserved                        |     |      |           |
 ///
+/// **UUGreen**
+///
+/// | subindex | Description                     | r/w | Unit | size/type |
+/// |----------|---------------------------------|-----|------|-----------|
+/// | 0        | number of elements              | r   | \-   | uint8     |
+/// | 1        | Global board test result1       | R   |      | uint32    |
+/// | 2        | Global board test result2       | R   |      | uint32    |
+/// | others   | reserved                        |     |      |           |
+///
 /// Global results1 (Subindex 1):
+///
+/// **ResonantConverter**
 ///
 /// | **bit** | **Description**                                 |                                    |
 /// |---------|-------------------------------------------------|------------------------------------|
@@ -741,7 +759,30 @@ inline const char* PmStatus2String(int PmStatus)
 /// | 28      | DC bus                                          | 0: not tested 1: failed: 3: passed |
 /// | 30      | Grid connection                                 | 0: not tested 1: failed: 3: passed |
 ///
+/// **UUGreen**
+///
+/// | **bit** | **Description**                                 |                                               |
+/// |---------|-------------------------------------------------|-----------------------------------------------|
+/// | 0       | Total test result                               | 0: busy       1: failed 2: reserved 3: passed |
+/// | 2       | Whether system AC relay is close or not         | 0: not tested 1: open   2: reserved 3: close  |
+/// | 4       | Communication between Powerbridge and PM        | 0: not tested 1: failed 2: unstable 3: passed |
+/// | 6       | Reserved                                        |                                               |
+/// | 8       | AC over voltage                                 | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 10      | AC under voltage                                | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 12      | PFC over voltage                                | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 14      | PFC under voltage                               | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 16      | PFC unbalance                                   | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 18      | DC over voltage                                 | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 20      | DC under voltage                                | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 22      | DC unbalance                                    | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 24      | Bleeder                                         | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 26      | Fan                                             | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 28      | Fan driver                                      | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 30      | Communication between PFC and DCDC              | 0: not tested 1: failed 2: reserved 3: passed |
+///
 /// Global results2 (Subindex 2):
+///
+/// **ResonantConverter**
 ///
 /// | **bit** | **Description**          |                                    |
 /// |---------|--------------------------|------------------------------------|
@@ -761,6 +802,14 @@ inline const char* PmStatus2String(int PmStatus)
 /// | 26      | Reserved                 | 3                                  |
 /// | 28      | Reserved                 | 3                                  |
 /// | 30      | Reserved                 | 3                                  |
+///
+/// **UUGreen**
+///
+/// | **bit** | **Description**                                 |                                               |
+/// |---------|-------------------------------------------------|-----------------------------------------------|
+/// | 0       | PFC E2PROM                                      | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 2       | DCDC E2PROM                                     | 0: not tested 1: failed 2: reserved 3: passed |
+/// | 4..31   | Reserved                                        |                                               |
 ///
 /// Temperature results (Subindex 3):
 ///
@@ -1471,6 +1520,33 @@ typedef union
     uint32_t ulAll;
     struct
     {
+        uint32_t bfTestResult                 : 2;      // bit 0..1
+        uint32_t bfSystemAcRelayClose         : 2;
+        uint32_t bfCommunication              : 2;
+        uint32_t bfReserved                   : 2;
+
+        uint32_t bfAcOv                       : 2;      // bit 8..9
+        uint32_t bfAcUv                       : 2;
+        uint32_t bfPfcOv                      : 2;
+        uint32_t bfPfcUv                      : 2;
+
+        uint32_t bfPfcUnbalance               : 2;      // bit 16..17
+        uint32_t bfDcOv                       : 2;
+        uint32_t bfDcUv                       : 2;
+        uint32_t bfDcUnbalance                : 2;
+
+        uint32_t bfBleeder                    : 2;      // bit 24..25
+        uint32_t bfFan                        : 2;
+        uint32_t bfFanDriver                  : 2;
+        uint32_t bfPfcDcCommunication         : 2;
+    } bits;
+} TUugreenBistResultGeneral1;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct
+    {
         uint32_t bfCpldInterlock : 2;              // bit 0..1
         uint32_t bfCpldOVP : 2;
         uint32_t bfCpldOCP : 2;
@@ -1490,6 +1566,17 @@ typedef union
         uint32_t bfReserved10 : 2;
     } bits;
 } TPmBistResultGeneral2;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct
+    {
+        uint32_t bfPfcEeprom                  : 2;
+        uint32_t bfDcEeprom                   : 2;
+        uint32_t bfReserved                   : 28;
+    } bits;
+} TUugreenBistResultGeneral2;
 
 typedef union
 {
