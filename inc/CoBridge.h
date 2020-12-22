@@ -616,17 +616,21 @@ enum TPwbUpdateError {
 /// |0.1     |Interlink contactors DC- status|0: open; 1: closed |
 /// |0.2     |Outlet error                   |0: normal, 1: error|
 /// |0.3     |Configuration error            |0: normal, 1: error|
-/// |0.4-4.7 |reserved                       |-                  |
+/// |0.4     |Interlink contactors DC+ error |0: normal, 1: error|
+/// |0.5     |Interlink contactors DC- error |0: normal, 1: error|
+/// |0.6-4.7 |reserved                       |-                  |
 
 typedef union
 {
     struct
     {
         uint32_t m_bInterlinkDCPlusClose:1;
-        uint32_t m_bInterlinkDCMinusrClose:1;
+        uint32_t m_bInterlinkDCMinusClose:1;
         uint32_t m_bHasOutletError:1;
         uint32_t m_bHasConfigurationError:1;
-        uint32_t m_unused:28;
+        uint32_t m_bInterlinkDCPlusError:1;
+        uint32_t m_bInterlinkDCMinusError:1;
+        uint32_t m_unused:26;
     }m_bits;
     uint32_t m_data;
 }TPwbStatus;
