@@ -485,6 +485,7 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
 /// The values in the command are defined as follows:
 ///
 /// For UUGreen
+///
 /// | Byte      | Description   | UnitSize |
 /// |-----------|---------------|----------|
 /// | 0:1       | PFC version   | uint16   |
