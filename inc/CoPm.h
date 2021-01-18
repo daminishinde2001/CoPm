@@ -1426,10 +1426,10 @@ struct TPmConstraint {
     };
 };
 // Test results definitions
-#define PM_TR_NOT_TESTED                           0
-#define PM_TR_TEST_FAILED                          1
-#define PM_TR_RESERVED                             2
-#define PM_TR_TEST_PASSED                          3
+#define PM_TR_NOT_TESTED                           0U
+#define PM_TR_TEST_FAILED                          1U
+#define PM_TR_RESERVED                             2U
+#define PM_TR_TEST_PASSED                          3U
 
 // the test results are reported with several SDOs
 // 2 general SDOs with general board info
