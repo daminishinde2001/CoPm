@@ -18,6 +18,7 @@
 /// | 2107         | DC output voltage              | r   | 0.1V   | uint16                 |         |
 /// | 2108         | DC output current              | r   | 0.1A   | uint16                 |         |
 /// | 2109         | DC output voltage setpoint     | r/w | 0.1V   | uint16                 |         |
+/// |              | for PowerBridge converters     | r/w | 0.1V,0.1V | uint16, int16       |         |
 /// | 210a         | DC output current setpoint     | r/w | 0.1A   | uint16                 |         |
 /// | 210b         | DC current slope               | r/w | 0.1A/s | uint16                 |         |
 /// | 210c         | DC voltage slope               | r/w | 0.1V/s | uint16                 |         |
@@ -302,6 +303,9 @@ inline const char* PmStatus2String(int PmStatus)
 
 #define PM_SDO_DC_OUTPUT_U_SETPOINT            0x2109
 /// This object contains the output voltage setpoint in steps of 0.1V.
+///
+/// For PowerBridge converters, this object contains both the output voltage
+/// setpoint *and* the outlet voltage (vehicle battery), in steps of 0.1V.
 
 #define PM_SDO_DC_OUTPUT_I_SETPOINT            0x210a
 /// This object contains the output current setpoint, in steps of 0.1A.
