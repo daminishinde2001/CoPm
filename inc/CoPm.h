@@ -1032,24 +1032,26 @@ typedef union {
 /// | 10     | 3 phase cost down high voltage(EU and US)                                        |
 /// | 11     | 1 phase VESTA                                                                    |
 /// | 12     | 3 phase VESTA NAM                                                                |
+/// | 13     | Poseidon 50 Hz with maximum power 53.3kW                                         |
 /// | others | reserved                                                                         |
 
 typedef enum
- {
-     E_CONV_TYPE_3P_ESMERALDA = 0,
-     E_CONV_TYPE_1P_MAGELLAN,
-     E_CONV_TYPE_3P_480VAC,
-     E_CONV_TYPE_3P_600VDC,
-     E_CONV_TYPE_3P_POSEIDON,
-     E_CONV_TYPE_3P_MARATHON,
-     E_CONV_TYPE_3P_POSEIDON_60Hz,
-     E_CONV_TYPE_3P_MARATHON_60Hz,
-     E_CONV_TYPE_3P_ESMERALDA_CC,
-     E_CONV_TYPE_3P_MARATHON_US_60Hz,
-     E_CONV_TYPE_3P_ESMERALDA_HV,
-     E_CONV_TYPE_1P_VESTA,
-     E_CONV_TYPE_3P_VESTA_NAM
- } tConverterType;
+{
+    E_CONV_TYPE_3P_ESMERALDA = 0,
+    E_CONV_TYPE_1P_MAGELLAN,
+    E_CONV_TYPE_3P_480VAC,
+    E_CONV_TYPE_3P_600VDC,
+    E_CONV_TYPE_3P_POSEIDON,
+    E_CONV_TYPE_3P_MARATHON,
+    E_CONV_TYPE_3P_POSEIDON_60Hz,
+    E_CONV_TYPE_3P_MARATHON_60Hz,
+    E_CONV_TYPE_3P_ESMERALDA_CC,
+    E_CONV_TYPE_3P_MARATHON_US_60Hz,
+    E_CONV_TYPE_3P_ESMERALDA_HV,
+    E_CONV_TYPE_1P_VESTA,
+    E_CONV_TYPE_3P_VESTA_NAM,
+    E_CONV_TYPE_3P_POSEIDON_53KW
+} tConverterType;
 
 #define PM_SDO_HW_COMPONENTS                   0x2159
 /// This object reads or writes the Hardware components
