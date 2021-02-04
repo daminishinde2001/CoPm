@@ -33,6 +33,13 @@
 /// | 2117 [0..4]  | Cooling parameters             | r/w |        |                        | X       |
 /// | 211a         | Current transfer ratio         | r   | \*256  | uint16                 |         |
 /// | 211b         | Number of input phases         | r   |        | uint16                 |         |
+/// | 2120 [0..3]  | Measurements AC voltage        | r   | 0.1V   | uint16                 |         |
+/// | 2121 [0..3]  | Measurements AC current        | r   | 0.1A   | uint16                 |         |
+/// | 2122 [0..2]  | Measurements AC energy         | r   | Wh     | uint16                 |         |
+/// | 2123         | DC min input voltage setpoint  | r/w | 0.1V   | uint16                 |         |
+/// | 2124         | DC max input current setpoint  | r/w | 0.1A   | uint16                 |         |
+/// | 2125 [0..2]  | Maximum AC Current             | r   | 0.1A   | uint16                 |         |
+/// | 2126 [0..2]  | Maximum AC Power               | r   | W      | uint16                 |         |
 /// | 2130 [0..24] | None volatile statistics       | r/w |        | uint32                 |         |
 /// | 2131         | Can statistics                 | r/w |        | uint32                 |         |
 /// | 2132         | I2C statistics                 | r/w |        | uint32                 |         |
@@ -59,6 +66,9 @@
 /// | 215b         | 4epy code of whole assembly    | r/w |        | uint32                 | X       |
 /// | 215c         | Hardware ID                    | r/w |        | uint8                  | X       |
 /// |              |                                |     |        |                        |         |
+/// | 2161         | V2H mode                       | r/w |        | uint8                  |         |
+/// | 2162 [0..4]  | Grid fault information         | r   |        | uint16                 |         |
+/// | 2170         | Grid code                      | r/w |        | uint8                  |         |
 /// | 21e0         | Debug variable address         | r/w |        | uint32                 |         |
 /// | 21e1         | Debug variable value           | r/w |        | float                  |         |
 /// | 21e2[]       | Regulation parameter           | r/w |        | several                |         |
@@ -538,6 +548,73 @@ inline const char* PmStatus2String(int PmStatus)
 #define PM_SDO_NUMBER_OF_PHASES                0x211b
 /// This object can be used to write and read the number of phase the grid connection has
 
+#define PM_SDO_AC_VOLTAGE                      0x2120
+/// This object reads the actual measured ac voltage
+///
+/// | subindex | Description                              | r/w | unit | size/type |
+/// |----------|------------------------------------------|-----|------|-----------|
+/// | 0        | number of elements                       | r   | \-   | uint8     |
+/// | 1        | AC voltage, phase A                      | r   | 0.1V | uint16    |
+/// | 2        | AC voltage, phase B                      | r   | 0.1V | uint16    |
+/// | 3        | AC voltage, phase C                      | r   | 0.1V | uint16    |
+/// | others   | reserved                                 |     |      |           |
+
+#define PM_SDO_AC_CURRENT                      0x2121
+/// This object reads the actual measured ac current
+///
+/// | subindex | Description                              | r/w | unit | size/type |
+/// |----------|------------------------------------------|-----|------|-----------|
+/// | 0        | number of elements                       | r   | \-   | uint8     |
+/// | 1        | AC current, phase A                      | r   | 0.1A | uint16    |
+/// | 2        | AC current, phase B                      | r   | 0.1A | uint16    |
+/// | 3        | AC current, phase C                      | r   | 0.1A | uint16    |
+/// | others   | reserved                                 |     |      |           |
+
+#define PM_SDO_AC_ENERGY                       0x2122
+/// This object reads the actual measured ac energy
+///
+/// | subindex | Description                              | r/w | unit | size/type |
+/// |----------|------------------------------------------|-----|------|-----------|
+/// | 0        | number of elements                       | r   | \-   | uint8     |
+/// | 1        | Charging AC energy                       | r   | Wh   | uint16    |
+/// | 2        | Discharging AC energy                    | r   | Wh   | uint16    |
+/// | others   | reserved                                 |     |      |           |
+
+
+#define PM_SDO_DC_INPUT_U_MIN_SETPOINT         0x2123
+/// This object contains the min input voltage setpoint, in steps of 0.1V.
+
+#define PM_SDO_DC_INPUT_I_MAX_SETPOINT         0x2124
+/// This object contains the max input current setpoint, in steps of 0.1A.
+
+#define PM_SDO_EVSE_MAX_AC_CURRENT             0x2125
+/// This object reads the max ac current
+///
+/// | subindex | Description                              | r/w | unit | size/type |
+/// |----------|------------------------------------------|-----|------|-----------|
+/// | 0        | number of elements                       | r   | \-   | uint8     |
+/// | 1        | Max charge current                       | r   | 0.1A | uint16    |
+/// | 2        | Max discharge current                    | r   | 0.1A | uint16    |
+/// | others   | reserved                                 |     |      |           |
+
+#define PM_SDO_EVSE_MAX_AC_CURRENT_NR_ELEMENTS 0
+#define PM_SDO_EVSE_MAX_AC_CURRENT_CHARGE      1
+#define PM_SDO_EVSE_MAX_AC_CURRENT_DISCHARGE   2
+
+#define PM_SDO_EVSE_MAX_AC_POWER               0x2126
+/// This object reads the max ac power
+///
+/// | subindex | Description                              | r/w | unit | size/type |
+/// |----------|------------------------------------------|-----|------|-----------|
+/// | 0        | number of elements                       | r   | \-   | uint8     |
+/// | 1        | Max charge power                         | r   |  W   | uint16    |
+/// | 2        | Max discharge power                      | r   |  W   | uint16    |
+/// | others   | reserved                                 |     |      |           |
+#define PM_SDO_EVSE_MAX_AC_POWER_NR_ELEMENTS   0
+#define PM_SDO_EVSE_MAX_AC_POWER_CHARGE        1
+#define PM_SDO_EVSE_MAX_AC_POWER_DISCHARGE     2
+
+
 #define PM_SDO_NV_STATISTICS                   0x2130
 /// This object reads or writes the Non-volatile statistics
 ///
@@ -880,6 +957,44 @@ typedef union {
     uint16_t    m_value;
 } TPmStatus;
 
+typedef union {
+    struct {
+        uint32_t DC_OverCurrent_HW:1;
+        uint32_t DC_AmbientTemperatureAbnormal:1;
+        uint32_t DC_OverTemperature:1;
+        uint32_t DC_OverCurrent:1;
+        uint32_t DC_BusOverVoltage:1;
+        uint32_t DC_BusUnderVoltage:1;
+        uint32_t DC_OverVoltage:1;
+        uint32_t DC_UnderVoltage:1;
+        uint32_t DC_Short:1;
+        uint32_t DC_BusUnbalance:1;
+        uint32_t DC_OverVoltage_HW:1;
+        uint32_t DC_FanError:1;
+        uint32_t DC_ExternalCurrentSensorError:1;
+        uint32_t DC_IpcVersionUnmatched:1;
+        uint32_t DC_EepromError:1;
+        uint32_t DC_CanError:1;
+        uint32_t AC_RelayError:1;
+        uint32_t AC_CurrentUnbalance:1;
+        uint32_t AC_OverCurrent:1;
+        uint32_t AC_OverCurrent_HW:1;
+        uint32_t AC_GridFail:1;
+        uint32_t AC_DcInjectionError:1;
+        uint32_t AC_SoftStartFail:1;
+        uint32_t AC_CurrentSensorError:1;
+        uint32_t AC_GridIslanding:1;
+        uint32_t AC_BusVoltageSensorError:1;
+        uint32_t AC_BusVoltageFail:1;
+        uint32_t AC_BusOverVoltage:1;
+        uint32_t AC_BusUnderVoltage:1;
+        uint32_t AC_BusUnbalance:1;
+        uint32_t DC_DumpLoadError:1;
+        uint32_t AC_GeneralError:1;
+    }           bits;
+    uint32_t    value;
+} TV2hPmStatus;
+
 #define PM_SDO_BIST_MEASUREMENTS_CHANNEL_1     0x2142
 /// This object reads the BIST measurement for Channel 1 (ResonantConverter)
 /// -----------------------------------------------
@@ -1187,6 +1302,44 @@ typedef enum
 ///
 /// This is a one byte number identifying the hardware.
 
+#define PM_SDO_V2H_MODE                        0x2161
+/// This object write the V2H mode to power module, this object indicates this charger is bidirectional or unidirectional.
+///
+/// | Value  | V2H mode                                                    |
+/// |------- |-------------------------------------------------------------|
+/// | 0      | Unidirectional                                              |
+/// | 1      | Bidirectional                                               |
+/// | others | reserved                                                    |
+
+#define PM_SDO_GRID_FAULT_RECORD               0x2162
+/// This object reads the grid fault information
+///
+/// | subindex | Description                              | r/w | unit | size/type |
+/// |----------|------------------------------------------|-----|------|-----------|
+/// | 0        | number of elements                       | r   | \-   | uint8     |
+/// | 1        | Fault type                               | r   | \-   | uint8     |
+/// | 2        | Setting of trip value                    | r   | \-   | uint16    |
+/// | 3        | Setting of trip time                     | r   | \-   | uint16    |
+/// | 4        | Measurement of tripped value             | r   | \-   | uint16    |
+/// | others   | reserved                                 |     |      |           |
+#define PM_SDO_GRID_NR_OF_ELEMENTS_IDX         0
+#define PM_SDO_GRID_FAULT_TYPE_IDX             1
+#define PM_SDO_GRID_SETTING_VALUE_IDX          2
+#define PM_SDO_GRID_SETTING_OPERATE_TIME_IDX   3
+#define PM_SDO_GRID_READING_VALUE_IDX          4
+
+
+#define PM_SDO_GRID_CODE                       0x2170
+/// This object write the grid code to power module, can be read from power module.
+/// This object indicates which grid standard is used.
+///
+/// | Value  | Grid standard                                                     |
+/// |------- |-------------------------------------------------------------------|
+/// | 0      | Undefined                                                         |
+/// | 1      | "DIN VDE-0126.FR", French grid standard                           |
+/// | 2      | "G99", British grid standard                                      |
+/// | others | reserved                                                          |
+
 #define PM_SDO_DBG_VAR_ADDRESS                 0x21e0
 /// This object reads or writes the Debug variable address (BuckBoost)
 ///
@@ -1437,10 +1590,14 @@ struct PM_PDO_1
 #define PM_SDO_CONV_TEMP_MASK   0x3FF
 
 #define PM_PDO_SIGNAL_MEASUREMENT              PDO_2
-/// A chunk of data is dumped with this PDO. Every PDO message contain 4 words of
-/// data. The dump starts with a defined start marker (4 bytes) and with a
-/// multiplier (2 bytes) and divider (2 bytyes) so the receiving application can
-/// convert these values to their original units.
+/// A chunk of data is dumped with this PDO. Every PDO message contain 4 words of data.
+
+struct PM_PDO_2
+{
+    int16_t        acpower;
+    uint16_t       frequency;
+    TV2hPmStatus   errorcode;
+};
 
 #define PM_PDO_CONSTRAINT                      PDO_3
 /// When the device cannot perform at its design capability defined by 2110, this
