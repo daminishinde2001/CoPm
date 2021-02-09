@@ -376,7 +376,7 @@ enum TPwbInterlinkDcContactorRead
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 /// This object defines the type of the power module(s) in the charger. For each type the
-/// power-bridge implements the required specific control behavior.
+/// Power bridge implements the required specific control behavior.
 ///
 /// The following types are supported:
 ///
@@ -420,19 +420,19 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
 }
 
 #define PWB_SDO_CONFIG_PM_TOPOLOGY      0x2421
-/// This object contains the actual number of outlets and the number of power modules connected
-/// to a certain outlet in the charger.
+/// This object contains the actual number of groups and the number of power modules assigned
+/// to a certain group.
 /// It is required to configure the power topology especially when implementing dynamic power
-/// distribution. There can be one or more outlets in a charger, and the number of power modules
-/// connected to a specific outlet shall be configured.
+/// distribution. One power bridge can manage one or 2 groups and the number of power modules
+/// connected to a specific group shall be configured.
 ///
 /// The values for a write request sub-index are defined as:
 ///
 /// | Sub-Index | Description                                   | UnitSize | Data Range  |
 /// |-----------|-----------------------------------------------|----------|-------------|
-/// |0          | Number of outlets                             | uint8    | 0 – 2       |
-/// |1          | Number of power modules connected to outlet 1 | uint8    | 0 – 8       |
-/// |2          | Number of power modules connected to outlet 2 | uint8    | 0 – 8       |
+/// |0          | Number of groups                              | uint8    | 0 – 2       |
+/// |1          | Number of power modules connected to group 1  | uint8    | 0 – 8       |
+/// |2          | Number of power modules connected to group 2  | uint8    | 0 – 8       |
 
 #define PWB_SDO_CONFIG_PM_GROUP         0x2422
 /// This object contains a map of the group topology associated with the power modules in a charger.
@@ -470,7 +470,7 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
 ///
 /// eg.
 ///
-///     If the offset is set to 6, the CAN node ID of the power modules exposed by this PowerBridge
+///     If the offset is set to 6, the CAN node ID of the power modules exposed by this power bridge
 ///     starts from CAN_ID_PWR + 6. (If no offset is set, by default, it starts from CAN_ID_PWR)
 ///
 /// External power modules
