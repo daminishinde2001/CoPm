@@ -20,6 +20,8 @@
 /// | 2402         | Interlink dc-contactor control | r/w | \-                  | uint8                  |         |
 /// | 2403         | Power module max output        | r/w | 0.1V                | uint16                 |         |
 /// |              |                                |     | 0.1A                | uint16                 |         |
+/// | 2404         | Fan configuration              | r/w | enum                | uint8                  |   X     |
+/// | 2405         | Fan state                      | r/w | \                   | uint8,uint32           |         |
 /// | 2420         | Power module config type       | r/w | enum                | uint8                  |   X     |
 /// | 2421         | Power module config topology   | r/w | nº outlets          | uint8                  |   X     |
 /// |              |                                |     | nº pm outlet1       | uint8                  |         |
@@ -373,6 +375,43 @@ enum TPwbInterlinkDcContactorRead
 /// |----------|------------------------|------|-----------|
 /// | 0        | Max of session voltage | 0.1V |  uint16   |
 /// | 2        | Max of session current | 0.1A |  uint16   |
+
+#define PWB_SDO_FAN_CONFIGURATION           0x2404
+/// This object contains the configuration of the fan.
+///
+/// This value is used to derive a number of parameters like fan type (DC or AC),
+/// fan feedback signal type (IO or PWM) and number of fans.
+///
+/// | Value    | Description                    |
+/// |----------|--------------------------------|
+/// | 0        | None, typically not be used    |
+/// | 1        | HC_300A                        |
+
+#define PWB_SDO_FANS_STATE                  0x2405
+/// When written, it sets the states of the fans.
+/// The size of the value is uint8.
+///
+/// Its definition is described as below
+///
+/// | Value | Description    |
+/// |-------|----------------|
+/// | 0     | stop  the fans |
+/// | 1     | start the fans |
+///
+/// Remark: all the fans are controlled together when written.
+///
+/// When read, it gives the states of fans.
+/// The size of the value is uint32.
+/// The state of each fan uses 2 bits, max 16 fans are supported.
+///
+/// The definition is described as below
+///
+/// | Bits       | Description    | Value                                         |
+/// |------------|----------------|-----------------------------------------------|
+/// | 0:1        | state of fan 1 | 0: normal  1: reserved  2: reserved  3: error |
+/// | 2:3        | state of fan 2 | 0: normal  1: reserved  2: reserved  3: error |
+/// | ...        |                |                                               |
+/// | 2n-2: 2n-1 | state of fan n | 0: normal  1: reserved  2: reserved  3: error |
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 /// This object defines the type of the power module(s) in the charger. For each type the
