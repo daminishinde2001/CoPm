@@ -41,6 +41,7 @@
 /// |              |                                |     | data fram byte 3    | uint8                  |         |
 /// |              |                                |     | data fram byte 4    | uint8                  |         |
 /// | 2443         | Power module update data end   | w   | -                   | uint8                  |         |
+/// | 2444         | Power module update mode       | w   | enum                | uint8                  |         |
 /// |              |                                |     |                     |                        |         |
 /// | pdo1         | Device status                  | r   | \-                  | uint32                 |         |
 
@@ -646,9 +647,24 @@ enum TPwbUpdateError {
 /// This write-only object is used to notify the end of the upgrade for a power module.
 ///
 /// For some vendors, a vendor-CRC is optional in data section
+
+#define PWB_SDO_UPDATE_MODE             0x2444
+/// This object specifies the mode of the power module update, which is defined
+/// as below
 ///
-/// PDO1 Device status
-/// ------------------
+/// | Mode                | Description                                                                |
+/// |---------------------|----------------------------------------------------------------------------|
+/// | PUM_VERIFY_ADDR_NUM | Verify the addresses and number of the power modules before updating       |
+/// | PUM_VERIFY_NUM      | Verify only the number of the power modules before updating                |
+/// | PUM_VERIFY_NOTHING  | Don't verify the addresses nor number of the power modules before updating |
+///
+enum TPwbUpdateMode {
+    PUM_VERIFY_ADDR_NUM = 0,
+    PUM_VERIFY_NUM,
+    PUM_VERIFY_NOTHING,
+};
+
+/// ### PDO1 status
 ///
 /// |byte.bit|Description                    |Value              |
 /// |--------|-------------------------------|-------------------|
