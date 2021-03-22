@@ -31,16 +31,16 @@
 /// |              |                                |     | group1 mask         | uint32                 |         |
 /// | 2423         | Power module config offset     | r/w | uint8               | uint8                  |   X     |
 /// |              |                                |     | group1 mask         | uint32                 |         |
-/// | 2423         | Power module update start      | w   | PfcDsp              | uint16                 |         |
+/// | 2440         | Power module update start      | w   | PfcDsp              | uint16                 |         |
 /// |              |                                |     | DcDcDsp             | uint16                 |         |
-/// | 2423         | Power module update state      | r   | state               | uint8                  |         |
+/// | 2441         | Power module update state      | r   | state               | uint8                  |         |
 /// |              |                                |     | image index/error id| uint8                  |         |
 /// |              |                                |     | error detail        | uint16                 |         |
-/// | 2423         | Power module update data frame | w   | data fram byte 1    | uint8                  |         |
+/// | 2442         | Power module update data frame | w   | data fram byte 1    | uint8                  |         |
 /// |              |                                |     | data fram byte 2    | uint8                  |         |
 /// |              |                                |     | data fram byte 3    | uint8                  |         |
 /// |              |                                |     | data fram byte 4    | uint8                  |         |
-/// | 2423         | Power module update data end   | w   | -                   | uint8                  |         |
+/// | 2443         | Power module update data end   | w   | -                   | uint8                  |         |
 /// |              |                                |     |                     |                        |         |
 /// | pdo1         | Device status                  | r   | \-                  | uint32                 |         |
 
