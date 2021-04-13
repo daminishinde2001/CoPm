@@ -144,34 +144,34 @@ typedef struct
 ///
 /// UUGR power module state
 ///
-/// |State index|Bit offset|Description                             |Value           |
-/// |-----------|----------|----------------------------------------|----------------|
-/// |0          |0         |AC input overvoltage                    |0: ok; 1: error |
-/// |           |1         |AC input undervoltage                   |0: ok; 1: error |
-/// |           |2         |Protected as AC overvoltage             |0: ok; 1: error |
-/// |           |3         |Reserved                                |                |
-/// |           |4         |Reserved                                |                |
-/// |           |5         |Reserved                                |                |
-/// |           |6         |DC output overvoltage                   |0: ok; 1: error |
-/// |           |7         |Protected as DC overvoltage             |0: ok; 1: error |
-/// |           |          |                                        |                |
-/// |1          |0         |DC output undervoltage                  |0: ok; 1: error |
-/// |           |1         |FAN failure                             |0: ok; 1: error |
-/// |           |2         |Reserved                                |                |
-/// |           |3         |Reserved                                |                |
-/// |           |4         |Ambient overtemperature                 |0: ok; 1: error |
-/// |           |5         |Reserved                                |                |
-/// |           |6         |Protected as PFC temperature1           |0: ok; 1: error |
-/// |           |7         |Protected as PFC temperature2           |0: ok; 1: error |
-/// |           |          |                                        |                |
-/// |2          |0         |Protected as DC temperature1            |0: ok; 1: error |
-/// |           |1         |Protected as DC temperature2            |0: ok; 1: error |
-/// |           |2         |Communication fault between PFC and DCDC|0: ok; 1: error |
-/// |           |3         |Reserved                                |                |
-/// |           |4         |PFC fault                               |0: ok; 1: fault |
-/// |           |5         |DCDC fault                              |0: ok; 1: fault |
-/// |           |6         |Reserved                                |                |
-/// |           |7         |DCDC shutdown                           |0: on; 1: off   |
+/// |State index|Bit offset|Description                              |Value           |
+/// |-----------|----------|-----------------------------------------|----------------|
+/// |0          |0         |AC input overvoltage                     |0: ok; 1: error |
+/// |           |1         |AC input undervoltage                    |0: ok; 1: error |
+/// |           |2         |Protected as AC overvoltage              |0: ok; 1: error |
+/// |           |3         |Pfc bus overvoltage                      |0: ok; 1: error |
+/// |           |4         |Pfc bus undervoltage                     |0: ok; 1: error |
+/// |           |5         |Pfc bus unbalanced                       |0: ok; 1: error |
+/// |           |6         |DC output overvoltage                    |0: ok; 1: error |
+/// |           |7         |Protected as DC overvoltage              |0: ok; 1: error |
+/// |           |          |                                         |                |
+/// |1          |0         |DC output undervoltage                   |0: ok; 1: error |
+/// |           |1         |FAN failure                              |0: ok; 1: error |
+/// |           |2         |Fan drive circuit fault                  |0: ok; 1: error |
+/// |           |3         |Protected as ambient temperature         |0: ok; 1: error |
+/// |           |4         |Ambient temperature too low              |0: ok; 1: error |
+/// |           |5         |Protected as pfc temperature1            |0: ok; 1: error |
+/// |           |6         |Protected as dc temperature1             |0: ok; 1: error |
+/// |           |7         |Communication fault between pfc and dcdc |0: ok; 1: error |
+/// |           |          |                                         |                |
+/// |2          |0         |Pfc fault                                |0: ok; 1: error |
+/// |           |1         |DcDc fault                               |0: ok; 1: error |
+/// |           |2         |Dcdc shutdown                            |0: ok; 1: error |
+/// |           |3-4       |Output loop status                       |                |
+/// |           |5         |Dc output voltage unbalanced             |0: ok; 1: error |
+/// |           |6         |Sn is the same                           |0: ok; 1: error |
+/// |           |7         |bleed circuit fault                      |0: ok; 1: error |
+
 typedef struct
 {
     union
@@ -270,9 +270,9 @@ typedef struct
             uint8_t bfAcInputOvervoltage : 1;
             uint8_t bfAcInputUndervoltage : 1;
             uint8_t bfProtectedAsAcOvervoltage : 1;
-            uint8_t bfReserved1 : 1;
-            uint8_t bfReserved2 : 1;
-            uint8_t bfReserved3 : 1;
+            uint8_t bfPfcBusOvervoltage : 1;
+            uint8_t bfPfcBusUndervoltage : 1;
+            uint8_t bfPfcBusUnbalanced : 1;
             uint8_t bfDcOutputOvervoltage : 1;
             uint8_t bfProtectedAsDcOvervoltage : 1;
         }bits;
@@ -286,12 +286,12 @@ typedef struct
         {
             uint8_t bfDcOutputUndervoltage : 1;
             uint8_t bfFanFailure : 1;
-            uint8_t bfReserved1 : 1;
-            uint8_t bfReserved2 : 1;
-            uint8_t bfAmbientOvertemperature : 1;
-            uint8_t bfReserved3 : 1;
+            uint8_t bfFanDriveCircuitFault : 1;
+            uint8_t bfProtectedAsAmbientTemperature : 1;
+            uint8_t bfAmbientTemperatureTooLow : 1;
             uint8_t bfProtectedAsPfcTemperature1 : 1;
-            uint8_t bfProtectedAsPfcTemperature2 : 1;
+            uint8_t bfProtectedAsDcTemperature1 : 1;
+            uint8_t bfCommunicationFaultBetweenPfcAndDcdc : 1;
         }bits;
 
         uint8_t data;
@@ -301,14 +301,13 @@ typedef struct
     {
         struct
         {
-            uint8_t bfProtectedAsDcTemperature1 : 1;
-            uint8_t bfProtectedAsDcTemperature2 : 1;
-            uint8_t bfCommunicationFaultBetweenPfcAndDcdc : 1;
-            uint8_t bfReserved1 : 1;
             uint8_t bfPfcFault : 1;
-            uint8_t bfDcdcFault : 1;
-            uint8_t bfReserved2 : 1;
+            uint8_t bfDcDcFault : 1;
             uint8_t bfDcdcShutdown : 1;
+            uint8_t bfOutputLoopStatus : 2;
+            uint8_t bfDcOutputVoltageUnbalanced : 1;
+            uint8_t bfSnIsTheSame : 1;
+            uint8_t bfbleedCircuitFault : 1;
         }bits;
 
         uint8_t data;
