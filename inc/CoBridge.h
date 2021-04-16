@@ -20,7 +20,7 @@
 /// | 2402         | Interlink dc-contactor control | r/w | \-                  | uint8                  |         |
 /// | 2403         | Power module max output        | r/w | 0.1V                | uint16                 |         |
 /// |              |                                |     | 0.1A                | uint16                 |         |
-/// | 2404         | Fan configuration              | r/w | enum                | uint8                  |   X     |
+/// | 2404         | Fan configuration              | r/w | \                   | uint8                  |   X     |
 /// | 2405         | Fan state                      | r/w | \                   | uint8,uint32           |         |
 /// | 2420         | Power module config type       | r/w | enum                | uint8                  |   X     |
 /// | 2421         | Power module config topology   | r/w | nº outlets          | uint8                  |   X     |
@@ -379,8 +379,15 @@ enum TPwbInterlinkDcContactorRead
 #define PWB_SDO_FAN_CONFIGURATION           0x2404
 /// This object contains the configuration of the fan.
 ///
-/// This value is used to derive a number of parameters like fan type (DC or AC),
-/// fan feedback signal type (IO or PWM) and number of fans.
+/// The definition is below
+///
+/// | Subindex | Description                          | r/w | UnitSize    |
+/// |----------|--------------------------------------|-----|-------------|
+/// | 0        | Configuration id                     | r/w | uint8       |
+/// | 1        | Fan number in current configuration  | r   | uint8       |
+///
+/// Subindex 0 is used to derive a number of parameters like fan type (DC or AC),
+/// fan feedback signal type (IO or PWM) and number of fans as below.
 ///
 /// | Value    | Description                    |
 /// |----------|--------------------------------|
