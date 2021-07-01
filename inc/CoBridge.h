@@ -22,6 +22,7 @@
 /// |              |                                |     | 0.1A                | uint16                 |         |
 /// | 2404         | Fan configuration              | r/w | \                   | uint8                  |   X     |
 /// | 2405         | Fan state                      | r/w | \                   | uint8,uint32           |         |
+/// | 2406         | AC contactor group state       | r/w | \                   | uint8                  |         |
 /// | 2420         | Power module config type       | r/w | enum                | uint8                  |   X     |
 /// | 2421         | Power module config topology   | r/w | nº outlets          | uint8                  |   X     |
 /// |              |                                |     | nº pm outlet1       | uint8                  |         |
@@ -419,6 +420,29 @@ enum TPwbInterlinkDcContactorRead
 /// | 2:3        | state of fan 2 | 0: normal  1: reserved  2: reserved  3: error |
 /// | ...        |                |                                               |
 /// | 2n-2: 2n-1 | state of fan n | 0: normal  1: reserved  2: reserved  3: error |
+
+#define PWB_SDO_GROUPS_AC_CONTACTORS          0x2406
+/// This object contains the state of the AC relay for a group of power modules.
+/// The size of the value is uint8.
+///
+/// When written, it sets the states of the AC relay on the power modules assigned to a certain group.
+///
+/// | bit    | description                   | value        |
+/// |--------|-------------------------------|--------------|
+/// |    0   | state of AC realy for group 1 | 0: off 1: on |
+/// |    1   | state of AC realy for group 2 | 0: off 1: on |
+/// |    ... | ...                           |              |
+/// |    7   | state of AC realy for group 8 | 0: off 1: on |
+///
+/// When read, it gets the state of the AC relay on the power modules assigned to a certain group.
+///
+/// | bit    | description                   | value        |
+/// |--------|-------------------------------|--------------|
+/// |    0   | state of AC realy for group 1 | 0: off 1: on |
+/// |    1   | state of AC realy for group 2 | 0: off 1: on |
+/// |    ... | ...                           |              |
+/// |    7   | state of AC realy for group 8 | 0: off 1: on |
+
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 /// This object defines the type of the power module(s) in the charger. For each type the
