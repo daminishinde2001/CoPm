@@ -443,6 +443,24 @@ enum TPwbInterlinkDcContactorRead
 /// |    ... | ...                           |              |
 /// |    7   | state of AC realy for group 8 | 0: off 1: on |
 
+#define PWB_SDO_CABINET_CONTROLLER 0x2407
+/// Powerbridge should be aware of its cabinet node id to listen only relevant Ccb,
+/// this object contains the controller to listen for i.e. the CCB PDO to register.
+///
+/// The size of the value is uint8.
+///
+/// When written, it sets the CAN controller id to listen.
+///
+/// | Value | Description                                            |
+/// |-------|--------------------------------------------------------|
+/// | 0x00  | Default, CAN_ID_CCB and CAN_ID_CCB_CABINET control PWB |
+/// | 0x1A  | PWB listens CCB3 i.e CAN_ID_CCB_CABINET                |
+///
+/// When read, it gets the CAN controller id
+/// | Value | Description                                            |
+/// |-------|--------------------------------------------------------|
+/// | 0x00  | Default, CAN_ID_CCB and CAN_ID_CCB_CABINET control PWB |
+/// | 0x1A  | PWB listens CCB3 i.e CAN_ID_CCB_CABINET                |
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 /// This object defines the type of the power module(s) in the charger. For each type the
