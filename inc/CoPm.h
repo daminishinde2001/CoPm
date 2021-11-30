@@ -1789,6 +1789,125 @@ typedef union
     } bits;
 } TPmBistTemperatureControl;
 
+typedef union
+{
+    uint32_t ulAll;
+    struct {
+        //passed if all the tests have been performed and are passed.
+        uint32_t bfTestResult : 2;
+        //passed if it is possible to correctly write in the EEPROM (passive test).
+        uint32_t bfEeprom: 2;
+        //passed if the module current (battery current) is zero (passive test).
+        uint32_t bfImodZero: 2;
+        //passed if the inlet DC bus voltage is within a lower and an upper threshold (passive test).
+        uint32_t bfInletDcBusVoltage: 2;
+        //passed if the output DC bus voltage is zero (passive test).
+        uint32_t bfOutputDcBusVoltageZero: 2;
+        //passed if inlet breakers are properly closed (passive test).
+        uint32_t bfFuse: 2;
+        //passed if Pdpint is not active (passive test).
+        uint32_t bfPdpint: 2;
+        //passed if interlock signal is present (passive test).
+        uint32_t bfInterlock: 2;
+        //passed if over current protection of module current (battery current) is not active (passive test).
+        uint32_t bfOverCurrProtImod: 2;
+        //passed if the hardware discharge circuit works properly (active tests).
+        uint32_t bfHwDischargePtc: 2;
+        //all set to 11b (3dec) by default.
+        uint32_t bfReserved1 : 2;
+        uint32_t bfReserved2 : 2;
+        uint32_t bfReserved3 : 2;
+        uint32_t bfReserved4 : 2;
+        uint32_t bfReserved5 : 2;
+        uint32_t bfReserved6 : 2;
+    } bits;
+} TBuckBoostBistGeneralResult1;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct{
+        //passed if, during the first session of fan tests, the fan is able to shut down (fan test).
+        uint32_t bfFanStop: 2;
+        //passed if, during the second session of fan tests, the fan is able to switch on (fan test).
+        uint32_t bfFanIdle: 2;
+        //passed if, during the second session of fan tests, the fan speed lies above the lower threshold (fan test).
+        uint32_t bfFanSlow: 2;
+        //passed if, during the second session of fan tests, the fan speed lies below the upper threshold (fan test).
+        uint32_t bfFanFast: 2;
+        //all set to 11b (3dec) by default.
+        uint32_t bfReserved1 : 2;
+        uint32_t bfReserved2 : 2;
+        uint32_t bfReserved3 : 2;
+        uint32_t bfReserved4 : 2;
+        uint32_t bfReserved5 : 2;
+        uint32_t bfReserved6 : 2;
+        uint32_t bfReserved7 : 2;
+        uint32_t bfReserved8 : 2;
+        uint32_t bfReserved9 : 2;
+        uint32_t bfReserved10 : 2;
+        uint32_t bfReserved11 : 2;
+        uint32_t bfReserved12 : 2;
+    } bits;
+} TBuckBoostBistGeneralResult2FanTest;
+
+typedef union
+{
+    uint32_t ulAll;
+    struct{
+        //passed if coil temperature lies within admissible range (passive test).
+        uint32_t bfTemperatureBB: 2;
+        //passed if DSP temperature lies within admissible range (passive test).
+        uint32_t bfTemperatureChip: 2;
+        //passed if IGBT temperature lies within admissible range (passive test).
+        uint32_t bfTemperatureMA: 2;
+        //passed if IGBT temperature lies within admissible range (passive test).
+        uint32_t bfTemperatureMB: 2;
+        //all set to 11b (3dec) by default.
+        uint32_t bfReserved1 : 2;
+        uint32_t bfReserved2 : 2;
+        uint32_t bfReserved3 : 2;
+        uint32_t bfReserved4 : 2;
+        uint32_t bfReserved5 : 2;
+        uint32_t bfReserved6 : 2;
+        uint32_t bfReserved7 : 2;
+        uint32_t bfReserved8 : 2;
+        uint32_t bfReserved9 : 2;
+        uint32_t bfReserved10 : 2;
+        uint32_t bfReserved11 : 2;
+        uint32_t bfReserved12 : 2;
+    } bits;
+} TBuckBoostBistGeneralResult2TempTest;
+
+typedef union{
+    uint32_t ulAll;
+    struct{
+        //passed if phase current is zero (passive test).
+        uint32_t bfIphaseZero: 2;
+        //passed if over current protection of phase current is not active (passive test).
+        uint32_t bfOverCurrProtIphase: 2;
+        //passed if the voltage setpoint of step I of active tests is reached for the considered phase (active test).
+        uint32_t bfBuckHighVoltageSetpoint: 2;
+        //passed if the voltage setpoint of step II of active tests is reached for the considered phase (active test).
+        uint32_t bfBuckLowVoltageSetpoint: 2;
+        //passed if the voltage setpoint of step V of active tests is reached for the considered phase (active test).
+        uint32_t bfBoostHighVoltageSetpoint: 2;
+        //passed if the voltage setpoint of step VI of active tests is reached for the considered phase (active test).
+        uint32_t bfBoostLowVoltageSetpoint: 2;
+        //all set to 11b (3dec) by default.
+        uint32_t bfReserved1 : 2;
+        uint32_t bfReserved2 : 2;
+        uint32_t bfReserved3 : 2;
+        uint32_t bfReserved4 : 2;
+        uint32_t bfReserved5 : 2;
+        uint32_t bfReserved6 : 2;
+        uint32_t bfReserved7 : 2;
+        uint32_t bfReserved8 : 2;
+        uint32_t bfReserved9 : 2;
+        uint32_t bfReserved10 : 2;
+    } bits;
+}TBuckBoostBistConvXResult;
+
 #pragma pack()
 
 #endif // __INTERFACE_COPM_H__
