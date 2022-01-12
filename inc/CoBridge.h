@@ -35,6 +35,7 @@
 /// |              |                                |     | group1 mask         | uint32                 |         |
 /// | 2440         | Power module update start      | w   | PfcDsp              | uint16                 |         |
 /// |              |                                |     | DcDcDsp             | uint16                 |         |
+/// |              |                                |     | CanDsp              | uint16                 |         |
 /// | 2441         | Power module update state      | r   | state               | uint8                  |         |
 /// |              |                                |     | image index/error id| uint8                  |         |
 /// |              |                                |     | error detail        | uint16                 |         |
@@ -479,6 +480,7 @@ enum TPwbInterlinkDcContactorRead
 /// | 4     | INCR 500V/30A          |Increase    |
 /// | 5     | INCR 750V/25A          |Increase    |
 /// | 6     | UUGR 1000V/30A         |UUGreenPower|
+/// | 7     | ELPC 1000V/30A         |ELPCPower   |
 
 enum TPwbPowerModuleType
 {
@@ -489,6 +491,7 @@ enum TPwbPowerModuleType
     PWB_INCR50030,
     PWB_INCR75025,
     PWB_UUGR100030,
+    PWB_ELPC100030,
 };
 
 inline const char* PwbTypeString(TPwbPowerModuleType PmType)
@@ -503,6 +506,7 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
     case PWB_INCR50030:  retValue = "Increase,500V/30A"; break;
     case PWB_INCR75025:  retValue = "Increase,750V/25A"; break;
     case PWB_UUGR100030:  retValue = "UuGreen,1000V/30A"; break;
+    case PWB_ELPC100030:  retValue = "Elpc,1000V/30A"; break;
     default: break;
     }
 
@@ -636,23 +640,40 @@ enum TPwbUpdateError {
     PUE_START_PRIMARY_ERASE_UNEXPECTED_RESP_ADDR_ERROR,
     PUE_START_PRIMARY_BOOTLOADER_NO_RESP,
     PUE_START_PRIMARY_BOOTLOADER_UNEXPECTED_RESP_ADDR_ERROR,
+
+    PUE_START_CAN_ERASE_NO_RESP ,
+    PUE_START_CAN_ERASE_UNEXPECTED_RESP_ADDR_ERROR,
+    PUE_START_CAN_BOOTLOADER_NO_RESP,
+    PUE_START_CAN_BOOTLOADER_UNEXPECTED_RESP_ADDR_ERROR,
+
     PUE_START_SECONDARY_ERASE_NO_RESP,
     PUE_START_SECONDARY_ERASE_UNEXPECTED_RESP_ADDR_ERROR,
     PUE_START_SECONDARY_BOOTLOADER_NO_RESP,
     PUE_START_SECONDARY_BOOTLOADER_UNEXPECTED_RESP_ADDR_ERROR,
+
+    PUE_START_CAN_READ_VER_UNEXPECTED_RESP_ADDR_ERROR,
     PUE_START_PRIMARY_READ_VER_UNEXPECTED_RESP_ADDR_ERROR,
     PUE_START_SECONDARY_READ_VER_UNEXPECTED_RESP_ADDR_ERROR,
 
+    PUE_START_CAN_ERASE_UNEXPECTED_RESP_GROUP_ID_ERROR,
+    PUE_START_CAN_BOOTLOADER_UNEXPECTED_RESP_GROUP_ID_ERROR,
     PUE_START_PRIMARY_ERASE_UNEXPECTED_RESP_GROUP_ID_ERROR,
     PUE_START_PRIMARY_BOOTLOADER_UNEXPECTED_RESP_GROUP_ID_ERROR,
     PUE_START_SECONDARY_ERASE_UNEXPECTED_RESP_GROUP_ID_ERROR,
     PUE_START_SECONDARY_BOOTLOADER_UNEXPECTED_RESP_GROUP_ID_ERROR,
+
+    PUE_START_CAN_READ_VER_UNEXPECTED_RESP_GROUP_ID_ERROR,
     PUE_START_PRIMARY_READ_VER_UNEXPECTED_RESP_GROUP_ID_ERROR,
     PUE_START_SECONDARY_READ_VER_UNEXPECTED_RESP_GROUP_ID_ERROR,
 
+    PUE_START_CAN_READ_VER_SAME_ADDR_ERROR,
     PUE_START_PRIMARY_READ_VER_SAME_ADDR_ERROR,
     PUE_START_SECONDARY_READ_VER_SAME_ADDR_ERROR,
 
+    PUE_START_CAN_CHK_SOFT_STATE_NO_RESP,
+    PUE_START_CAN_CHK_SOFT_STATE_UNEXPECTED_RESP_ADDR_ERROR,
+    PUE_START_CAN_CHK_SOFT_STATE_UNEXPECTED_RESP_GROUP_ID_ERROR,
+    PUE_START_CAN_CHK_SOFT_STATE_UNEXPECTED_RESP_SAME_ADDR_ERROR,
     PUE_START_PRIMARY_CHK_SOFT_STATE_NO_RESP,
     PUE_START_PRIMARY_CHK_SOFT_STATE_UNEXPECTED_RESP_ADDR_ERROR,
     PUE_START_PRIMARY_CHK_SOFT_STATE_UNEXPECTED_RESP_GROUP_ID_ERROR,
@@ -666,8 +687,11 @@ enum TPwbUpdateError {
     PUE_DATA_PRIMARY_WRITE_FAILURE,
     PUE_DATA_SECONDARY_WRITE_NO_RESP,
     PUE_DATA_SECONDARY_WRITE_FAILURE,
+    PUE_DATA_CAN_WRITE_NO_RESP,
+    PUE_DATA_CAN_WRITE_FAILURE,
     PUE_DATA_PRIMARY_INVALID_SEQUENCE_NUMBER,
     PUE_DATA_SECONDARY_INVALID_SEQUENCE_NUMBER,
+    PUE_DATA_CAN_INVALID_SEQUENCE_NUMBER,
 
     PUE_END_PRIMARY_UPDATE_NO_RESP = 71,
     PUE_END_PRIMARY_UPDATE_FAILURE,
@@ -677,6 +701,10 @@ enum TPwbUpdateError {
     PUE_END_SECONDARY_UPDATE_FAILURE,
     PUE_END_SECONDARY_VERSION_NO_RESP,
     PUE_END_SECONDARY_WRONG_VERSION,
+    PUE_END_CAN_UPDATE_NO_RESP,
+    PUE_END_CAN_UPDATE_FAILURE,
+    PUE_END_CAN_VERSION_NO_RESP,
+    PUE_END_CAN_WRONG_VERSION,
     PUE_END_NOT_GET_SERIAL_NUMBER,
 };
 
