@@ -23,6 +23,7 @@
 /// | 2404         | Fan configuration              | r/w | \                   | uint8                  |   X     |
 /// | 2405         | Fan state                      | r/w | \                   | uint8,uint32           |         |
 /// | 2406         | AC contactor group state       | r/w | \                   | uint8                  |         |
+/// | 2407         | PDO entity to listen for       | r/w | \                   | uint8                  |   X     |
 /// | 2420         | Power module config type       | r/w | enum                | uint8                  |   X     |
 /// | 2421         | Power module config topology   | r/w | nº outlets          | uint8                  |   X     |
 /// |              |                                |     | nº pm outlet1       | uint8                  |         |
@@ -449,18 +450,19 @@ enum TPwbInterlinkDcContactorRead
 ///
 /// The size of the value is uint8.
 ///
-/// When written, it sets the CAN controller id to listen.
+/// When written, it sets the CAN controller to listen.
 ///
-/// | Value | Description                                            |
-/// |-------|--------------------------------------------------------|
-/// | 0x00  | Default, CAN_ID_CCB and CAN_ID_CCB_CABINET control PWB |
-/// | 0x1A  | PWB listens CCB3 i.e CAN_ID_CCB_CABINET                |
+/// | Value | Description                                                                              |
+/// |-------|------------------------------------------------------------------------------------------|
+/// | 0     | Default, PWB register handle for both PDOs coming from CAN_ID_CCB and CAN_ID_CCB_CABINET |
+/// | 1     | PWB register handle for PDOs coming from CCB3 i.e CAN_ID_CCB_CABINET                     |
 ///
-/// When read, it gets the CAN controller id
-/// | Value | Description                                            |
-/// |-------|--------------------------------------------------------|
-/// | 0x00  | Default, CAN_ID_CCB and CAN_ID_CCB_CABINET control PWB |
-/// | 0x1A  | PWB listens CCB3 i.e CAN_ID_CCB_CABINET                |
+/// When read, it gets the CAN controller to listen for
+///
+/// | Value | Description                                                                              |
+/// |-------|------------------------------------------------------------------------------------------|
+/// | 0     | Default, PWB register handle for both PDOs coming from CAN_ID_CCB and CAN_ID_CCB_CABINET |
+/// | 1     | PWB register handle for PDOs coming from CCB3 i.e CAN_ID_CCB_CABINET                     |
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 /// This object defines the type of the power module(s) in the charger. For each type the
