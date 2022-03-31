@@ -9,12 +9,12 @@
 /// | Object index | description                    | r/w | unit   | size / type            | persist |
 /// |--------------|--------------------------------|-----|--------|------------------------|---------|
 /// | 2100         | power convertor enable         | r/w | \-     | uint16                 |         |
-/// | 2101         | power convertor status         | r   | \-     | uint16                 |         |
+/// | 2101         | power convertor status         | r   | \-     | uint32                 |         |
 /// | 2102         | Power converter V/I status     | r   | \-     | uint16                 |         |
 /// | 2103         | PFC errors                     | r   | \-     | uint16                 |         |
 /// | 2104         | Temperature headroom           | r   | 0.1 °C | int16                  |         |
 /// | 2105         | Defect reason                  | r   |        | uint16                 |         |
-/// | 2106         | Last error/status              | r   |        | uint16                 |         |
+/// | 2106         | Last error/status              | r   |        | uint32                 |         |
 /// | 2107         | DC output voltage              | r   | 0.1V   | uint16                 |         |
 /// | 2108         | DC output current              | r   | 0.1A   | uint16                 |         |
 /// | 2109         | DC output voltage setpoint     | r/w | 0.1V   | uint16                 |         |
@@ -140,78 +140,116 @@ enum TPmConverterControl
     PM_CONVERTER_CLEAR_ERRORS = 6
 };
 #define PM_SDO_CONV_STATUS                     0x2101
-/// This object can be used to read the power converter status
+/// This object returns the full power converter status
 ///
-/// Low power converter status; ResConvDsp/10kW.
+/// **Converter types**
 ///
-/// | bit    | description                     | value                     | board        |
-/// |--------|---------------------------------|---------------------------|--------------|
-/// | 0      | charger on                      | 0: off; 1: on             |              |
-/// | 1      | global error flag               | 0: ok;  1: error          |              |
-/// | 2      | input over voltage detect       | 0: ok;  1: error          |              |
-/// | 3      | input under voltage detect      | 0: ok;  1: error          |              |
-/// | 4      | output over voltage detect      | 0: ok;  1: error          |              |
-/// | 5      | output under voltage detect     | 0: ok;  1: error          |              |
-/// | 6      | fan failure                     | 0: ok;  1: error          | Digital only |
-/// | 7      | over temperature detect         | 0: ok;  1: error          |              |
-/// | 8      | input over current protect      | 0: ok;  1: error          | Digital only |
-/// | 9      | output over current             | 0: ok;  1: error          | Digital only |
-/// | 10     | auxiliary supply voltage detect | 0: ok;  1: error          | Digital only |
-/// | 11     | interlock                       | 0: ok;  1: fault          | Digital only |
-/// | 12     | reset detected                  | 0: ok;  1: reset detected | Digital only |
-/// | 13     | Setpoint time out               | 0: ok;  1: time out       | Digital only |
-/// | 14     | Setpoint not met                | 0: ok;  1: fault          | Digital only |
-/// | 15     | PFC error                       | 0: ok;  1: fault          | Digital only |
-/// | 16     | Dumpload too hot                | 0: ok;  1: fault          | Digital only |
-/// | 17     | Dumpload error                  | 0: ok;  1: fault          | Digital only |
-/// | 18     | CAN ID error (duplicate)        | 0: ok;  1: fault          | Digital only |
-/// | 19     | Input current difference        | 0: ok;  1: fault          | Digital only |
-/// | 20     | Eeprom error                    | 0: ok;  1: fault          | Digital only |
-/// | others | reserved                        |                           |              |
+/// | name       | description                              |
+/// |------------|------------------------------------------|
+/// | ResConv    | Low power  (10 kW), low voltage  (500V)  |
+/// | ResConv/HV | Low power  (10 kW), High Voltage (1000V) |
+/// | BuckBoost  | High power (50 kW)                       |
+/// | DualStage  | Low power (22 kW) for Vesta wallbox      |
+/// | ACDC       | ARES AC-DC converter (90kW)              |
+/// | DCDC       | ARES DC-DC converter (45/90kW) |
 ///
-/// High power converter status; DcbBuckBoost/50kW.
+/// The *name* is also used to indicate converter specific faults in the overview below.
 ///
-/// | bit    | description                                               | value                     | board        |
-/// |--------|-----------------------------------------------------------|---------------------------|--------------|
-/// | 0      | charger on                                                | 0: off; 1: on             |              |
-/// | 1      | global error flag                                         | 0: ok;  1: error          |              |
-/// | 2      | input over voltage detect                                 | 0: ok;  1: error          |              |
-/// | 3      | input under voltage detect                                | 0: ok;  1: error          |              |
-/// | 4      | output over voltage detect                                | 0: ok;  1: error          |              |
-/// | 5      | setpoint failure. Voltage or current higher then setpoint | 0: ok;  1: error          |              |
-/// | 6      | fan failure                                               | 0: ok;  1: error          | Digital only |
-/// | 7      | over temperature detect                                   | 0: ok;  1: error          |              |
-/// | 8      | coil current protect                                      | 0: ok;  1: error          | Digital only |
-/// | 9      | output over current                                       | 0: ok;  1: error          | Digital only |
-/// | 10     | hardware over-current protect                             | 0: ok;  1: error          | Digital only |
-/// | 11     | interlock                                                 | 0: ok;  1: fault          | Digital only |
-/// | 12     | fault discharge circuit                                   | 0: ok;  1: reset detected | Digital only |
-/// | 13     | load dump                                                 | 0: ok;  1: time out       | Digital only |
-/// | 14     | unused                                                    | 0: ok;  1: fault          | Digital only |
-/// | 15     | fault fuse                                                | 0: ok;  1: fault          | Digital only |
-/// | others | reserved                                                  |                           |              |
-
-enum TPmConverterStatus
+/// **Fault indicators** bit 2 and higher values have the following meaning.
+///
+/// | value | description                |
+/// |-------|----------------------------|
+/// | 0     | inactive, *ok*             |
+/// | 1     | active, *fault* detetcted. |
+///
+/// **Converter status**
+///
+/// | bit<br>position | description                     | type |
+/// |--------|---------------------------------|-|
+/// | 0      | charger on                      | |
+/// | 1      | global error<br>see fault indicators below| |
+/// | 2      | input over voltage detect       | |
+/// | 3      | input under voltage detect      | |
+/// | 4      | output over voltage detect      | |
+/// | 5      | output under voltage detect     | |
+/// | 6      | fan failure                     | |
+/// | 7      | over temperature detect         | |
+/// | 8      | input over current protect      | |
+/// | 9      | output over current             | |
+/// | 10     | auxiliary supply voltage detect | |
+/// | 11     | control-bus interlock detected  | |
+/// | 12     | reset detected                  | |
+/// | 13     | Setpoint time out               | |
+/// | 14     | Setpoint not met                | |
+/// | 15     | PFC error                       | |
+/// | 16     | Dumpload too hot                | |
+/// | 17     | Dumpload error                  | |
+/// | 18     | CAN ID error (duplicate)        | |
+/// | 19     | Input current difference        | |
+/// | 20     | Eeprom error                    | |
+/// | 21     | Relay error                     | ResConv/HV, DualStage |
+/// | 22     | Fuse error                      | BuckBoost |
+/// | others | reserved                        | |
+///
+typedef union
 {
-    PM_STATUS_ENABLED                       = 1<<0,
-    PM_STATUS_GLOBAL_ERROR                  = 1<<1,
-    PM_STATUS_INPUT_OVER_VOLTAGE_PROTECT    = 1<<2,
-    PM_STATUS_INPUT_UNDER_VOLTAGE_PROTECT   = 1<<3,
-    PM_STATUS_OUTPUT_OVER_VOLTAGE_PROTECT   = 1<<4,
-    PM_STATUS_OUTPUT_UNDER_VOLTAGE_PROTECT  = 1<<5,
-    PM_STATUS_FAN_FAILURE                   = 1<<6,
-    PM_STATUS_OVER_TEMPERATURE_DETECT       = 1<<7,
-    PM_STATUS_INPUT_OVER_CURRENT_PROTECT    = 1<<8,
-    PM_STATUS_OUTPUT_OVER_CURRENT_PROTECT   = 1<<9,
-    PM_STATUS_AUX_SUPPLY                    = 1<<10,
-    PM_STATUS_INTERLOCK                     = 1<<11,
-    PM_STATUS_RESET_DETECTED                = 1<<12,
-    PM_STATUS_SETPOINT_TIMEOUT              = 1<<13,
-    PM_STATUS_SETPOINT_NOT_MET              = 1<<14,
-    PM_STATUS_PFC_ERROR                     = 1<<15
+    struct
+    {
+        uint32_t bfConverterActive  : 1;
+        uint32_t bfGlobalError      : 1;
+        uint32_t bfOVPin            : 1;
+        uint32_t bfUVPin            : 1;
+        uint32_t bfOVPout           : 1;
+        uint32_t bfUVPout           : 1;
+        uint32_t bfFanError         : 1;
+        uint32_t bfOTP              : 1;
+        uint32_t bfOCPin            : 1;
+        uint32_t bfOCPout           : 1;
+        uint32_t bfUVPAuxSupply     : 1;
+        uint32_t bfInterlockDetected: 1;
+        uint32_t bfResetProtection  : 1;
+        uint32_t bfSetpointTimeout  : 1;
+        uint32_t bfSetpointNotMet   : 1;
+        uint32_t bfPFCerror         : 1;
+        uint32_t bfDumploadTooHot   : 1;
+        uint32_t bfDumploadError    : 1;
+        uint32_t bfCanIdError       : 1;
+        uint32_t bfInputCurrentDiff : 1;
+        uint32_t bfEepromError      : 1;
+        uint32_t bfRelayError       : 1;
+        uint32_t bfFuseError        : 1;
+    } bits;
+    uint32_t value;
+} TPmConverterStatus;
+
+enum TPmConverterStatusBits
+{
+     PM_STATUS_ENABLED                       = 1<< 0
+    ,PM_STATUS_GLOBAL_ERROR                  = 1<< 1
+    ,PM_STATUS_INPUT_OVER_VOLTAGE_PROTECT    = 1<< 2
+    ,PM_STATUS_INPUT_UNDER_VOLTAGE_PROTECT   = 1<< 3
+    ,PM_STATUS_OUTPUT_OVER_VOLTAGE_PROTECT   = 1<< 4
+    ,PM_STATUS_OUTPUT_UNDER_VOLTAGE_PROTECT  = 1<< 5
+    ,PM_STATUS_FAN_FAILURE                   = 1<< 6
+    ,PM_STATUS_OVER_TEMPERATURE_DETECT       = 1<< 7
+    ,PM_STATUS_INPUT_OVER_CURRENT_PROTECT    = 1<< 8
+    ,PM_STATUS_OUTPUT_OVER_CURRENT_PROTECT   = 1<< 9
+    ,PM_STATUS_AUX_SUPPLY                    = 1<<10
+    ,PM_STATUS_INTERLOCK                     = 1<<11
+    ,PM_STATUS_RESET_DETECTED                = 1<<12
+    ,PM_STATUS_SETPOINT_TIMEOUT              = 1<<13
+    ,PM_STATUS_SETPOINT_NOT_MET              = 1<<14
+    ,PM_STATUS_PFC_ERROR                     = 1<<15
+    ,PM_STATUS_DUMPLOAD_TOO_HOT              = 1<<16
+    ,PM_STATUS_DUMPLOAD_ERROR                = 1<<17
+    ,PM_STATUS_CANID_ERROR                   = 1<<18
+    ,PM_STATUS_INPUT_CURRENT_DIFF            = 1<<19
+    ,PM_STATUS_EEPROM_ERROR                  = 1<<20
+    ,PM_STATUS_RELAY_ERROR                   = 1<<21
+    ,PM_STATUS_FUSE_ERROR                    = 1<<22
 };
 
-inline const char* PmStatus2String(int PmStatus)
+inline const char* PmStatus2String(unsigned PmStatus)
 {
     const char* retValue = "Undefined";
 
@@ -233,6 +271,13 @@ inline const char* PmStatus2String(int PmStatus)
     case PM_STATUS_SETPOINT_TIMEOUT:             retValue = "PM_STATUS_SETPOINT_TIMEOUT"; break;
     case PM_STATUS_SETPOINT_NOT_MET:             retValue = "PM_STATUS_SETPOINT_NOT_MET"; break;
     case PM_STATUS_PFC_ERROR:                    retValue = "PM_STATUS_PFC_ERROR"; break;
+    case PM_STATUS_DUMPLOAD_TOO_HOT:             retValue = "PM_STATUS_DUMPLOAD_TOO_HOT"; break;
+    case PM_STATUS_DUMPLOAD_ERROR:               retValue = "PM_STATUS_DUMPLOAD_ERROR"; break;
+    case PM_STATUS_CANID_ERROR:                  retValue = "PM_STATUS_CANID_ERROR"; break;
+    case PM_STATUS_INPUT_CURRENT_DIFF:           retValue = "PM_STATUS_INPUT_CURRENT_DIFF"; break;
+    case PM_STATUS_EEPROM_ERROR:                 retValue = "PM_STATUS_EEPROM_ERROR"; break;
+    case PM_STATUS_RELAY_ERROR:                  retValue = "PM_STATUS_RELAY_ERROR"; break;
+    case PM_STATUS_FUSE_ERROR:                   retValue = "PM_STATUS_FUSE_ERROR"; break;
     }
 
     return retValue;
@@ -951,11 +996,12 @@ typedef union {
         uint16_t m_auxUnderVoltageDetect:1;
         uint16_t m_interlock:1;
         uint16_t m_resetDetect:1;
-        uint16_t m_unused:2;
-        uint16_t m_cccvMode:1;
+        uint16_t m_setpointTimeout : 1;
+        uint16_t m_setpointNotMet : 1;
+        uint16_t m_PFCerror : 1;
     }           m_bits;
     uint16_t    m_value;
-} TPmStatus;
+} TPmStatus;    // NOTE: These are the 16lsb of 2101 as part of the status PDO_1
 
 typedef union {
     struct {
