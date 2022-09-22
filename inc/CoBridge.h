@@ -24,6 +24,8 @@
 /// | 2405         | Fan state                      | r/w | \                   | uint8,uint32           |         |
 /// | 2406         | AC contactor group state       | r/w | \                   | uint8                  |         |
 /// | 2407         | PDO entity to listen for       | r/w | \                   | uint8                  |   X     |
+/// | 2410         | Power module address and group | r   | pm address          | uint8                  |         |
+/// |              |                                |     | pm group address    | uint8                  |         |
 /// | 2420         | Power module config type       | r/w | enum                | uint8                  |   X     |
 /// | 2421         | Power module config topology   | r/w | nº outlets          | uint8                  |   X     |
 /// |              |                                |     | nº pm outlet1       | uint8                  |         |
@@ -464,6 +466,16 @@ enum TPwbInterlinkDcContactorRead
 /// |-------|------------------------------------------------------------------------------------------|
 /// | 0     | Default, PWB register handle for both PDOs coming from CAN_ID_CCB and CAN_ID_CCB_CABINET |
 /// | 1     | PWB register handle for PDOs coming from CCB3 i.e CAN_ID_CCB_CABINET                     |
+
+#define PWB_SDO_PM_ADDRESS 0x2410
+/// This object reads the power module address and group address
+///
+/// The values in the command are defined as follows:
+///
+/// | Offset   | Description            | Unit | UnitSize  |
+/// |----------|------------------------|------|-----------|
+/// | 0        | Pm address             | \    |  uint8    |
+/// | 1        | Pm group address       | \    |  uint8    |
 
 #define PWB_SDO_CONFIG_PM_TYPE          0x2420
 /// This object defines the type of the power module(s) in the charger. For each type the
