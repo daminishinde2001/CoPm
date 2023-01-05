@@ -9,46 +9,51 @@
 ///
 /// CoBridge is an extension of CoPm and is specific for external converters.
 ///
-/// | Object index | description                    | r/w | unit                | size / type            | persist |
-/// |--------------|--------------------------------|-----|---------------------|------------------------|---------|
-/// | 2400[0..8]   | DC output voltage and current  | r   | 0.1V                | uint16                 |         |
-/// |              |                                |     | 0.1A                | uint16                 |         |
-/// | 2401[0..8]   | Temperature and state          | r   | 0.1 °C              | uint8                  |         |
-/// |              |                                |     | state tab0          | uint8                  |         |
-/// |              |                                |     | state tab1          | uint8                  |         |
-/// |              |                                |     | state tab2          | uint8                  |         |
-/// | 2402         | Interlink dc-contactor control | r/w | \-                  | uint8                  |         |
-/// | 2403         | Power module max output        | r/w | 0.1V                | uint16                 |         |
-/// |              |                                |     | 0.1A                | uint16                 |         |
-/// | 2404         | Fan configuration              | r/w | \                   | uint8                  |   X     |
-/// | 2405         | Fan state                      | r/w | \                   | uint8,uint32           |         |
-/// | 2406         | AC contactor group state       | r/w | \                   | uint8                  |         |
-/// | 2407         | PDO entity to listen for       | r/w | \                   | uint8                  |   X     |
-/// | 2410         | Power module address and group | r   | pm address          | uint8                  |         |
-/// |              |                                |     | pm group address    | uint8                  |         |
-/// | 2420         | Power module config type       | r/w | enum                | uint8                  |   X     |
-/// | 2421         | Power module config topology   | r/w | nº outlets          | uint8                  |   X     |
-/// |              |                                |     | nº pm outlet1       | uint8                  |         |
-/// |              |                                |     | nº pm outlet2       | uint8                  |         |
-/// | 2422         | Power module config group      | r/w | nº groups           | uint32                 |   X     |
-/// |              |                                |     | group0 mask         | uint32                 |         |
-/// |              |                                |     | group1 mask         | uint32                 |         |
-/// | 2423         | Power module config offset     | r/w | uint8               | uint8                  |   X     |
-/// |              |                                |     | group1 mask         | uint32                 |         |
-/// | 2440         | Power module update start      | w   | PfcDsp              | uint16                 |         |
-/// |              |                                |     | DcDcDsp             | uint16                 |         |
-/// |              |                                |     | CanDsp              | uint16                 |         |
-/// | 2441         | Power module update state      | r   | state               | uint8                  |         |
-/// |              |                                |     | image index/error id| uint8                  |         |
-/// |              |                                |     | error detail        | uint16                 |         |
-/// | 2442         | Power module update data frame | w   | data fram byte 1    | uint8                  |         |
-/// |              |                                |     | data fram byte 2    | uint8                  |         |
-/// |              |                                |     | data fram byte 3    | uint8                  |         |
-/// |              |                                |     | data fram byte 4    | uint8                  |         |
-/// | 2443         | Power module update data end   | w   | -                   | uint8                  |         |
-/// | 2444         | Power module update mode       | w   | enum                | uint8                  |         |
-/// |              |                                |     |                     |                        |         |
-/// | pdo1         | Device status                  | r   | \-                  | uint32                 |         |
+/// | Object index | description                         | r/w | unit                | size / type            | persist |
+/// |--------------|-------------------------------------|-----|---------------------|------------------------|---------|
+/// | 2400[0..8]   | DC output voltage and current       | r   | 0.1V                | uint16                 |         |
+/// |              |                                     |     | 0.1A                | uint16                 |         |
+/// | 2401[0..8]   | Temperature and state               | r   | 0.1 °C              | uint8                  |         |
+/// |              |                                     |     | state tab0          | uint8                  |         |
+/// |              |                                     |     | state tab1          | uint8                  |         |
+/// |              |                                     |     | state tab2          | uint8                  |         |
+/// | 2402         | Interlink dc-contactor control      | r/w | \-                  | uint8                  |         |
+/// | 2403         | Power module max output             | r/w | 0.1V                | uint16                 |         |
+/// |              |                                     |     | 0.1A                | uint16                 |         |
+/// | 2404         | Fan configuration                   | r/w | \                   | uint8                  |   X     |
+/// | 2405         | Fan state                           | r/w | \                   | uint8,uint32           |         |
+/// | 2406         | AC contactor group state            | r/w | \                   | uint8                  |         |
+/// | 2407         | PDO entity to listen for            | r/w | \                   | uint8                  |   X     |
+/// | 2410         | Power module address and group      | r   | pm address          | uint8                  |         |
+/// |              |                                     |     | pm group address    | uint8                  |         |
+/// | 2420         | Power module config type            | r/w | enum                | uint8                  |   X     |
+/// | 2421         | Power module config topology        | r/w | nº outlets          | uint8                  |   X     |
+/// |              |                                     |     | nº pm outlet1       | uint8                  |         |
+/// |              |                                     |     | nº pm outlet2       | uint8                  |         |
+/// | 2422         | Power module config group           | r/w | nº groups           | uint32                 |   X     |
+/// |              |                                     |     | group0 mask         | uint32                 |         |
+/// |              |                                     |     | group1 mask         | uint32                 |         |
+/// | 2423         | Power module config offset          | r/w | uint8               | uint8                  |   X     |
+/// |              |                                     |     | group1 mask         | uint32                 |         |
+/// | 2424         | Power module capabilities           | r   | \                   | uint8                  |         |
+/// | 2424[1]      | Power module max voltage capability | r/w | 0.1V                | uint16                 |   X     |
+/// | 2424[2]      | Power module max current capability | r/w | 0.1A                | uint16                 |   X     |
+/// | 2424[3]      | Power module max power capability   | r/w | 0.1kW               | uint16                 |   X     |
+/// |              |                                     |     | max power           | uint16                 |   X     |
+/// | 2440         | Power module update start           | w   | PfcDsp              | uint16                 |         |
+/// |              |                                     |     | DcDcDsp             | uint16                 |         |
+/// |              |                                     |     | CanDsp              | uint16                 |         |
+/// | 2441         | Power module update state           | r   | state               | uint8                  |         |
+/// |              |                                     |     | image index/error id| uint8                  |         |
+/// |              |                                     |     | error detail        | uint16                 |         |
+/// | 2442         | Power module update data frame      | w   | data fram byte 1    | uint8                  |         |
+/// |              |                                     |     | data fram byte 2    | uint8                  |         |
+/// |              |                                     |     | data fram byte 3    | uint8                  |         |
+/// |              |                                     |     | data fram byte 4    | uint8                  |         |
+/// | 2443         | Power module update data end        | w   | -                   | uint8                  |         |
+/// | 2444         | Power module update mode            | w   | enum                | uint8                  |         |
+/// |              |                                     |     |                     |                        |         |
+/// | pdo1         | Device status                       | r   | \-                  | uint32                 |         |
 
 #define PWB_SDO_PM_OUTPUT               0x2400
 /// This read-only object contains the actual output voltage in steps of 0.1V and the actual output current
@@ -582,6 +587,36 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
 /// External power modules
 /// ----------------------
 ///
+
+#define PWB_SDO_CONFIG_PM_CAPABILITIES        0x2424
+/// This read-write object is used to read-set the maximum output voltage, output current and output power capability.
+///
+/// The maximum output voltage, output current and output power for power modules are hard-coded in the powerbridge firmware.
+/// The values should be configurable and stored by the powerbridge in order to cover all the cases in the near future.
+/// And a lower value than default 30kW power capability can be configured by this object for a higher lifetime expectancy
+/// as required for HVC. For example:
+/// T365 (Pmax=30 kW, Vmax=920 V)
+/// Marathor ( Pmax=22.5 kW, Vmax=1000 V)
+///
+/// During installation, the values should be configured as device.conf configuration. If the values are not configured,
+/// the default values for power module output capability should be used. If the configuration values are out of the range
+/// of default minimum and maximum capabilities that the power module provided, the error 'COR_INVALID_PARAM_VALUE' should
+/// be returned. And the debug console command "cpi/powerport/caps" should be able to show the values. (See the details in
+/// VSTS-24692, VSTS-24693 and VSTS-24696)
+///
+/// The values in the command are defined as follows:
+///
+/// | Sub-Index | Description                | Unit  | UnitSize  |
+/// |-----------|----------------------------|-------|-----------|
+/// | 0         | number of capability items | \     |  uint8    |
+/// | 1         | Max voltage capability     | 0.1V  |  uint16   |
+/// | 2         | Max current capability     | 0.1A  |  uint16   |
+/// | 3         | Max power capability       | 0.1kW |  uint16   |
+#define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_NUMBER  0
+#define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_VOLTAGE 1
+#define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_CURRENT 2
+#define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_POWER   3
+
 #define PWB_SDO_UPDATE_START            0x2440
 /// This write-only object contains the version(s) numbers of the image(s) for updating external power modules.
 /// When written, it starts the image update procedure of the external power modules.
