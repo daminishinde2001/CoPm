@@ -486,6 +486,9 @@ enum TPwbInterlinkDcContactorRead
 /// This object defines the type of the power module(s) in the charger. For each type the
 /// Power bridge implements the required specific control behavior.
 ///
+/// When written, it sets the Power module type. New power module type will be used after restart of the power bridge.
+/// When read, it returns the power module type configured at boot-up.
+///
 /// The following types are supported:
 ///
 /// | Value | Description            | Vendor     |
