@@ -51,6 +51,14 @@
 /// | 2138         | PFC comm statistics            | r/w |        | uint32                 |         |
 /// | 2139         | Eeprom statistics              | r/w |        | uint32                 |         |
 /// | 2141 [0..6]  | BIST results                   | r   |        | uint32                 |         |
+/// | 2142 [0..10] | BIST measurements channel 1    | r   |        | uint32                 |         |
+/// | 2143 [0..10] | BIST measurements channel 2    | r   |        | uint32                 |         |
+/// | 2144 [0..10] | BIST measurements channel 3    | r   |        | uint32                 |         |
+/// | 2145         | VI set point (PWB.Rx)          | r   |        | uint32                 |         |
+/// | 2146         | VI set point (PWB.Tx)          | r   |        | uint32                 |         |
+/// | 2147         | Battery voltage (PWB.RxTx)     | r   |        | uint32                 |         |
+/// | 2148         | VI measurement (PWB.Rx)        | r   |        | uint32                 |         |
+/// | 2149         | VI measurement (PWB.Tx)        | r   |        | uint32                 |         |
 /// |              |                                |     |        |                        |         |
 /// | 2150         | Power board version            | r/w | String | 4                      | X       |
 /// | 2151         | NTC board version              | r/w | String | 4                      | X       |
@@ -1166,6 +1174,81 @@ typedef union {
 /// DumploadTooFast:      0x00040000
 /// DumploadTimeout:      0x00080000
 /// DumploadLeakage:      0x00100000
+
+#define PM_SDO_VI_SET_POINT_PWB_RX             0x2145
+/// This object reads the voltage and current set point received by PowerBridge from CPI
+/// The data size of this object is 4 bytes. The definition of data is as below:
+
+typedef union
+{
+    struct
+    {
+        uint16_t    voltage;  // 0.1V
+        uint16_t    current;  // 0.1A
+    }items;
+
+    uint32_t data;
+}TPmVISetPointPwbRx;
+
+#define PM_SDO_VI_SET_POINT_PWB_TX             0x2146
+/// This object reads the voltage and current set point sent by PowerBridge to PMs
+/// The data size of this object is 4 bytes. The definition of data is as below:
+
+typedef union
+{
+    struct
+    {
+        uint16_t    voltage;  // 0.1V
+        uint16_t    current;  // 0.1A
+    }items;
+
+    uint32_t data;
+}TPmVISetPointPwbTx;
+
+#define PM_SDO_BATT_VOLTAGE_PWB_RXTX           0x2147
+/// The object reads the actual battery voltage received by PowerBridge from CPI and sent to PMs.
+/// The data size of this object is 4 bytes. The definition of data is as below:
+
+typedef union
+{
+    struct
+    {
+        uint16_t    voltageRx;  // 0.1V
+        uint16_t    voltageTx;  // 0.1V
+    }items;
+
+    uint32_t data;
+}TPmBatteryVoltagePwbRxTx;
+
+#define PM_SDO_VI_MEASUREMENT_PWB_RX           0x2148
+/// This object reads the measured voltage and current received by PowerBridge from PMs
+/// The data size of this object is 4 bytes. The definition of data is as below:
+
+typedef union
+{
+    struct
+    {
+        uint16_t    voltage;  // 0.1V
+        uint16_t    current;  // 0.1A
+    }items;
+
+    uint32_t data;
+}TPmVIMeasurementPwbRx;
+
+#define PM_SDO_VI_MEASUREMENT_PWB_TX           0x2149
+/// This object reads the measured voltage and current sent by PowerBridge to PMs
+/// The data size of this object is 4 bytes. The definition of data is as below:
+
+typedef union
+{
+    struct
+    {
+        uint16_t    voltage;  // 0.1V
+        uint16_t    current;  // 0.1A
+    }items;
+
+    uint32_t data;
+}TPmVIMeasurementPwbTx;
 
 #define PM_SDO_DCB_VERSION                     0x2150
 /// This object reads or writes the DCB version
