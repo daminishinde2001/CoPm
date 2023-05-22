@@ -40,6 +40,7 @@
 /// | 2424[2]      | Power module max current capability | r/w | 0.1A                | uint16                 |   X     |
 /// | 2424[3]      | Power module max power capability   | r/w | 0.1kW               | uint16                 |   X     |
 /// |              |                                     |     | max power           | uint16                 |   X     |
+/// | 2425         | CAN controller firmware version     | r   | \                   | uint32                 |         |
 /// | 2440         | Power module update start           | w   | PfcDsp              | uint16                 |         |
 /// |              |                                     |     | DcDcDsp             | uint16                 |         |
 /// |              |                                     |     | CanDsp              | uint16                 |         |
@@ -620,6 +621,22 @@ inline const char* PwbTypeString(TPwbPowerModuleType PmType)
 #define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_VOLTAGE 1
 #define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_CURRENT 2
 #define PWB_SDO_CONFIG_PM_CAPABILITIES_IDX_POWER   3
+
+#define PWB_SDO_PM_CAN_CONTROLLER_VERSION        0x2425
+/// This read-only object contains the power modules CAN controller version.
+///
+/// The values in the command are defined as follows:
+///
+/// For ELPC
+///
+/// | Byte      | Description     | UnitSize |
+/// |-----------|-----------------|----------|
+/// | 0:3       | CAN MCU version | uint32   |
+///
+/// Example:
+/// CAN firmware version value is 0x00001202 = 4610, so
+/// CAN firmware version is 4.61
+///
 
 #define PWB_SDO_UPDATE_START            0x2440
 /// This write-only object contains the version(s) numbers of the image(s) for updating external power modules.
