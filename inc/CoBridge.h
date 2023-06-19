@@ -826,15 +826,17 @@ enum TPwbUpdateMode {
 
 /// ### PDO1 status
 ///
-/// |byte.bit|Description                    |Value              |
-/// |--------|-------------------------------|-------------------|
-/// |0.0     |Interlink contactors DC+ status|0: open; 1: closed |
-/// |0.1     |Interlink contactors DC- status|0: open; 1: closed |
-/// |0.2     |Outlet error                   |0: normal, 1: error|
-/// |0.3     |Configuration error            |0: normal, 1: error|
-/// |0.4     |Interlink contactors DC+ error |0: normal, 1: error|
-/// |0.5     |Interlink contactors DC- error |0: normal, 1: error|
-/// |0.6-4.7 |reserved                       |-                  |
+/// |byte.bit|Description                    |Value                  |
+/// |--------|-------------------------------|-----------------------|
+/// |0.0     |Interlink contactors DC+ status|0: open; 1: closed     |
+/// |0.1     |Interlink contactors DC- status|0: open; 1: closed     |
+/// |0.2     |Outlet error                   |0: normal, 1: error    |
+/// |0.3     |Configuration error            |0: normal, 1: error    |
+/// |0.4     |Interlink contactors DC+ error |0: normal, 1: error    |
+/// |0.5     |Interlink contactors DC- error |0: normal, 1: error    |
+/// |0.6     |Global interlock               |0: normal, 1: triggered|
+/// |0.7     |Latch error                    |0: normal, 1: error    |
+/// |1.0-4.7 |reserved                       |-                      |
 
 typedef union
 {
@@ -846,7 +848,9 @@ typedef union
         uint32_t m_bHasConfigurationError:1;
         uint32_t m_bInterlinkDCPlusError:1;
         uint32_t m_bInterlinkDCMinusError:1;
-        uint32_t m_unused:26;
+        uint32_t m_bHasGlobalInterlock:1;
+        uint32_t m_bHasLatchError:1;
+        uint32_t m_unused:24;
     }m_bits;
     uint32_t m_data;
 }TPwbStatus;
